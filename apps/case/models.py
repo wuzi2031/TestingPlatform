@@ -59,18 +59,20 @@ class Case(models.Model):
     """
     测试用例
     """
-    TEST_TYPE = (
+    CASE_TYPE = (
         ("functional", "功能测试"),
         ("performance", "性能测试"),
         ("api", "接口测试"),
         ("safe", "安全测试"),
         ("other", "其他")
     )
+
     product_module = models.ForeignKey(ModuleCategory, related_name="case", verbose_name="产品模块类别")
     title = models.CharField(max_length=30, null=False, blank=False, verbose_name="用例标题")
     create_user = models.ForeignKey(User, verbose_name='创建人')
     # update_user = models.ForeignKey(User,verbose_name='修改人')
-    test_type = models.CharField(max_length=20, choices=TEST_TYPE, default="functional", verbose_name="用例类型")
+    case_type = models.CharField(max_length=20, choices=CASE_TYPE, default="functional", verbose_name="用例类型")
+    test_type = models.CharField(max_length=20, blank=True, null=False, help_text="如：冒烟测试等", verbose_name="测试类型")
     test_precondition = models.TextField(blank=True, null=True, verbose_name='前置条件')
     test_step = models.TextField(blank=True, null=True, verbose_name='测试步骤')
     enclosure_title = models.CharField(blank=True, null=True, verbose_name='附件标题')
@@ -98,7 +100,7 @@ class ScriptExcConfig(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.package_name
+        return self.prefix_path
 
 
 class CaseScript(models.Model):
