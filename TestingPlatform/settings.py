@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'xadmin',
     'rest_framework',
     'django_filters',
+    'case',
 ]
 
 MIDDLEWARE = [
