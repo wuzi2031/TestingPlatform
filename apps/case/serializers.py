@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, ModuleCategory, Case, CaseScript, ScriptExcConfig
+from .models import Product, ModuleCategory, Case, CaseScript, ScriptExcConfig, CaseSet
 from datetime import datetime
 
 
@@ -33,7 +33,6 @@ class ModuleCategorySerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
     product_id = serializers.CharField(help_text="产品id", write_only=True)
     name = serializers.CharField()
-    code = serializers.CharField()
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
 
     def validate(self, attrs):
@@ -54,4 +53,28 @@ class ModuleCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ModuleCategory
+        fields = "__all__"
+
+
+class CaseSetSerializer(serializers.ModelSerializer):
+    module = ModuleCategorySerializer(read_only=True)
+    module_id = serializers.CharField(help_text="模块id", write_only=True)
+    name = serializers.CharField()
+    add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
+
+    def validate(self, attrs):
+        module_id = self.initial_data['module_id']
+        name = self.initial_data['name']
+        module = ModuleCategory.objects.filter(id=module_id)[0]
+
+        count = CaseSet.objects.filter(name=name, module=module).count()
+        if (count > 0):
+            raise serializers.ValidationError("用例集名称已存在")
+        attrs['module'] = module
+        del attrs['module_id']
+        self.fields.pop('module_id')
+        return attrs
+
+    class Meta:
+        model = CaseSet
         fields = "__all__"

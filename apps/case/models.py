@@ -55,6 +55,23 @@ class ModuleCategory(models.Model):
         return self.name
 
 
+class CaseSet(models.Model):
+    """
+    测试用例集
+    """
+    module = models.ForeignKey(ModuleCategory, related_name="caseset", verbose_name="产品模块类别")
+    name = models.CharField(default="", max_length=30, verbose_name="用例集名", help_text="用例集名")
+    desc = models.TextField(default="", verbose_name="用例集描述", help_text="用例集描述")
+    add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
+
+    class Meta:
+        verbose_name = "用例集"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
+
+
 class Case(models.Model):
     """
     测试用例
@@ -67,7 +84,8 @@ class Case(models.Model):
         ("other", "其他")
     )
 
-    product_module = models.ForeignKey(ModuleCategory, related_name="case", verbose_name="产品模块类别")
+    module = models.ForeignKey(ModuleCategory, related_name="case", verbose_name="产品模块类别")
+    case_set = models.ForeignKey(CaseSet, blank=True, null=True, related_name="case", verbose_name="用例集")
     title = models.CharField(max_length=30, null=False, blank=False, verbose_name="用例标题")
     create_user = models.ForeignKey(User, verbose_name='创建人')
     # update_user = models.ForeignKey(User,verbose_name='修改人')

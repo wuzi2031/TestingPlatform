@@ -1,8 +1,10 @@
 from rest_framework import mixins, viewsets
-from .models import Product, ModuleCategory
-from .serializers import ProductSerializer, ModuleCategorySerializer
+from .models import Product, ModuleCategory, CaseSet
+from .serializers import ProductSerializer, ModuleCategorySerializer, CaseSetSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from .filters import ModuleCategoryFilter
+
 
 # Create your views here.
 
@@ -16,20 +18,17 @@ class ModuleCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ModuleCategorySerializer
     # permission_classes = (IsAuthenticated,)  # 登录验证
     # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
-    filter_backends = (DjangoFilterBackend,)  # 搜索排序过滤
-    filter_fields = ('product',)
+    filter_backends = (DjangoFilterBackend, OrderingFilter)  # 排序过滤
     filter_class = ModuleCategoryFilter
-    ordering_fields = ('add_time')  # 排序字段
+    ordering_fields = ('add_time',)  # 排序字段
 
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     return ModuleCategory.objects.filter(user=user)
-        # query_params_dict = self.request.query_params
-        # product_id = query_params_dict['product']
-        # parent_category = query_params_dict['parent_category']
-        # if (not product_id and not parent_category):
-        #     return self.queryset
-        # else:
-        #     if product_id:
-        #         product = Product.objects.filter(id=product_id)
-        #         ModuleCategory.objects.filter(product=product)
+
+class CaseSetViewSet(viewsets.ModelViewSet):
+    queryset = CaseSet.objects.all()
+    serializer_class = CaseSetSerializer
+    # permission_classes = (IsAuthenticated,)  # 登录验证
+    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)  # 搜索排序过滤
+    filter_fields = ('module',)
+    search_fields = ('name',)  # 搜索字段
+    ordering_fields = ('add_time',)  # 排序字段

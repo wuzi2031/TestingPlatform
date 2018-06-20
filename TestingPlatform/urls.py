@@ -21,11 +21,12 @@ from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
-from case.views import ProductViewSet, ModuleCategoryViewSet
+from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, base_name='products')
 router.register(r'modules', ModuleCategoryViewSet, base_name='modules')
+router.register(r'casesets', CaseSetViewSet, base_name='casesets')
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
