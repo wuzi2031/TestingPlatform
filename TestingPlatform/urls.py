@@ -16,15 +16,16 @@ Including another URLconf
 from django.conf.urls import url, include
 # from django.contrib import admin
 import xadmin
-from TestingPlatform.settings import MEDIA_ROOT,STATIC_ROOT
+from TestingPlatform.settings import MEDIA_ROOT, STATIC_ROOT
 from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
-
+from case.views import ProductViewSet, ModuleCategoryViewSet
 
 router = DefaultRouter()
-
+router.register(r'products', ProductViewSet, base_name='products')
+router.register(r'modules', ModuleCategoryViewSet, base_name='modules')
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),

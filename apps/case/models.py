@@ -24,7 +24,7 @@ class Product(models.Model):
     #                                     verbose_name="父类目",
     #                                     help_text="父类目")
     package_name = models.CharField(max_length=200, null=True, blank=True, help_text="如:apk包名", verbose_name='包名')
-    add_time = models.DateField(default=datetime.now, verbose_name="添加时间")
+    add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:
         verbose_name = "产品"
@@ -38,14 +38,14 @@ class ModuleCategory(models.Model):
     """
     模块
     """
-    product_category = models.ForeignKey(Product, verbose_name='产品')
+    product = models.ForeignKey(Product, verbose_name='产品')
     name = models.CharField(default="", max_length=30, verbose_name="模块名", help_text="模块名")
     code = models.CharField(default="", max_length=30, verbose_name="模块code", help_text="模块code")
     desc = models.TextField(default="", verbose_name="模块描述", help_text="模块描述")
     parent_category = models.ForeignKey("self", related_name="sub_module_cat", null=True, blank=True,
                                         verbose_name="父类目",
                                         help_text="父类目")
-    add_time = models.DateField(default=datetime.now, verbose_name="添加时间")
+    add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:
         verbose_name = "模块"
@@ -78,8 +78,8 @@ class Case(models.Model):
     enclosure_title = models.CharField(max_length=100, blank=True, null=True, verbose_name='附件标题')
     enclosure = models.FileField(upload_to="case/enclosure", null=True, blank=True, verbose_name='用例附件')
     is_del = models.BooleanField(default=False, verbose_name='是否已删除')
-    add_time = models.DateField(default=datetime.now, verbose_name="添加时间")
-    update_time = models.DateField(default=datetime.now(), verbose_name="修改时间")
+    add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
+    update_time = models.DateTimeField(default=datetime.now(), verbose_name="修改时间")
 
     class Meta:
         verbose_name = "测试用例"
@@ -114,8 +114,8 @@ class CaseScript(models.Model):
     upload_file = models.BooleanField(default=False, verbose_name="是否上传文件")
     desc = models.TextField(null=True, blank=True, verbose_name='描述')
     is_del = models.BooleanField(default=False, verbose_name='是否已删除')
-    add_time = models.DateField(default=datetime.now, verbose_name="添加时间")
-    update_time = models.DateField(default=datetime.now(), verbose_name="修改时间")
+    add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
+    update_time = models.DateTimeField(default=datetime.now(), verbose_name="修改时间")
 
     class Meta:
         verbose_name = "用例脚本"
