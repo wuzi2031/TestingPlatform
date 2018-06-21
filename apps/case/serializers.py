@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from .models import Product, ModuleCategory, Case, CaseScript, ScriptExcConfig, CaseSet
+from .models import Product, ModuleCategory, Case, CaseScript, CaseSet
 from datetime import datetime
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     name = serializers.CharField()
     code = serializers.CharField()
     product_type = serializers.CharField(help_text="""
@@ -26,10 +27,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ("id", "name", "code", "product_type", "package_name", "desc", "add_time")
+        fields = ("id","user", "name", "code", "product_type", "package_name", "desc", "add_time")
 
 
 class ModuleCategorySerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     product = ProductSerializer(read_only=True)
     product_id = serializers.CharField(help_text="产品id", write_only=True)
     name = serializers.CharField()
@@ -57,6 +59,7 @@ class ModuleCategorySerializer(serializers.ModelSerializer):
 
 
 class CaseSetSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     module = ModuleCategorySerializer(read_only=True)
     module_id = serializers.CharField(help_text="模块id", write_only=True)
     name = serializers.CharField()
