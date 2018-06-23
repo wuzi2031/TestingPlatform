@@ -166,6 +166,7 @@ class TestTask(models.Model):
     success_case_num = models.IntegerField(null=True, blank=True, verbose_name="成功用例数")
     fail_case_num = models.IntegerField(null=True, blank=True, verbose_name="失败用例数")
     block_case_num = models.IntegerField(null=True, blank=True, verbose_name="阻塞用例数")
+    re_execut_num = models.IntegerField(null=True, blank=True, verbose_name="失败重跑次数")
     desc = models.TextField(default="", verbose_name="描述", help_text="描述")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
     execut_start_time = models.DateTimeField(null=True, blank=True, verbose_name="执行开始时间")
