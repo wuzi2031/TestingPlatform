@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
+from __future__ import absolute_import
 import os, sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -46,6 +46,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'case',
+    'device',
+    # 'django_crontab',
+    'utils',
+    'djcelery',
 ]
 
 MIDDLEWARE = [
@@ -204,4 +208,23 @@ LOGGING = {
             'propagate': False,
         },
     },
+}
+
+#数据库调度
+# CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+BROKER_URL = 'amqp://admin:admin@120.79.16.35:5672//'
+# CELERY_RESULT_BACKEND = 'amqp://admin:admin@120.79.16.35:5672//'
+# schedules
+from datetime import timedelta
+CELERYBEAT_SCHEDULE = {
+    'add-every-30-seconds': {
+         'task': 'device.tasks.device_check',
+         'schedule': timedelta(seconds=30),       # 每 30 秒执行一次
+         'args': ()                           # 任务函数参数
+    },
+    # 'multiply-at-some-time': {
+    #     'task': 'celery_app.task2.multiply',
+    #     'schedule': crontab(hour=9, minute=50),   # 每天早上 9 点 50 分执行一次
+    #     'args': (3, 7)                            # 任务函数参数
+    # }
 }

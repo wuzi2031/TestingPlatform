@@ -61,7 +61,7 @@ class CaseSet(models.Model):
     """
     测试用例集
     """
-    module = models.ForeignKey(ModuleCategory, related_name="caseset", verbose_name="产品模块类别")
+    module = models.ForeignKey(ModuleCategory, related_name="caseset", verbose_name="产品模块")
     name = models.CharField(default="", max_length=30, verbose_name="用例集名", help_text="用例集名")
     desc = models.TextField(default="", verbose_name="用例集描述", help_text="用例集描述")
     user = models.ForeignKey(User, null=True, blank=True, verbose_name='创建人')
@@ -88,7 +88,7 @@ class Case(models.Model):
         ("other", "其他")
     )
 
-    module = models.ForeignKey(ModuleCategory, related_name="case", verbose_name="产品模块类别")
+    module = models.ForeignKey(ModuleCategory, related_name="case", verbose_name="产品模块")
     title = models.CharField(max_length=30, null=False, blank=False, verbose_name="用例标题")
     user = models.ForeignKey(User, verbose_name='创建人')
     # update_user = models.ForeignKey(User,verbose_name='修改人')
@@ -116,6 +116,7 @@ class CaseReleteCaseSet(models.Model):
     """
     case_set = models.ForeignKey(CaseSet, related_name="case", verbose_name="用例集")
     case = models.ForeignKey(Case, verbose_name='测试用例')
+    sort = models.IntegerField(default=0, verbose_name="序号")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:
@@ -188,6 +189,7 @@ class CaseReleteTestTask(models.Model):
     test_task = models.ForeignKey(TestTask, related_name="case", verbose_name='测试任务')
     case = models.ForeignKey(Case, null=True, blank=True, verbose_name='用例')
     case_set = models.ForeignKey(CaseSet, null=True, blank=True, verbose_name='用例集')
+    sort = models.IntegerField(default=0, verbose_name="序号")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:

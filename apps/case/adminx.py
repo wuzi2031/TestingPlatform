@@ -34,6 +34,10 @@ class CaseSetAdmin(object):
 
     inlines = [CaseReleteCaseSetInline, ]
 
+class CaseReleteCaseSetAdmin(object):
+    list_display = ["case_set", "case", "sort", "add_time"]
+    list_filter = ["case_set", "case", "sort", "add_time"]
+    search_fields = ['case_set', ]
 
 class CaseScriptAdmin(object):
     list_display = ["case", "name", "prefix_path", "script_file", "upload_file", "desc"
@@ -64,5 +68,6 @@ xadmin.site.register(Product, ProductAdmin)
 xadmin.site.register(ModuleCategory, ModuleCategoryAdmin)
 xadmin.site.register(Case, CaseAdmin)
 xadmin.site.register(CaseSet, CaseSetAdmin)
+xadmin.site.register(CaseReleteCaseSet, CaseReleteCaseSetAdmin)
 xadmin.site.register(CaseScript, CaseScriptAdmin)
 xadmin.site.register(TestTask, TestTaskAdmin)
