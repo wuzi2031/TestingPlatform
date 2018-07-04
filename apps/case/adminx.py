@@ -34,15 +34,17 @@ class CaseSetAdmin(object):
 
     inlines = [CaseReleteCaseSetInline, ]
 
+
 class CaseReleteCaseSetAdmin(object):
     list_display = ["case_set", "case", "sort", "add_time"]
     list_filter = ["case_set", "case", "sort", "add_time"]
     search_fields = ['case_set', ]
 
+
 class CaseScriptAdmin(object):
-    list_display = ["case", "name", "prefix_path", "script_file", "upload_file", "desc"
+    list_display = ["case", "name", "prefix_path", "script_file", "upload_file", "desc", "execute_env"
         , "user", "add_time", "update_time"]
-    list_filter = ["case", "name", "prefix_path", "user"]
+    list_filter = ["case", "name", "prefix_path", "execute_env", "user"]
     search_fields = ['name', ]
 
 

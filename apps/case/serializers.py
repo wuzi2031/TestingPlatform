@@ -86,7 +86,14 @@ class CaseSetSerializer(serializers.ModelSerializer):
         model = CaseSet
         fields = "__all__"
 
+class CaseScriptSerializer(serializers.ModelSerializer):
+    add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    update_time = serializers.DateTimeField(read_only=True, default=datetime.now())
 
+    class Meta:
+        model = CaseScript
+        fields = "__all__"
 class CaseSerializer(serializers.ModelSerializer):
     title = serializers.CharField(help_text="用例标题")
     case_type = serializers.CharField(help_text="""
@@ -104,11 +111,13 @@ class CaseSerializer(serializers.ModelSerializer):
     add_time = serializers.DateTimeField(default=datetime.now, read_only=True)
     update_time = serializers.DateTimeField(default=datetime.now(), read_only=True)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    case_script = CaseScriptSerializer(read_only=True, many=True)
 
     # module
     class Meta:
         model = Case
         fields = "__all__"
+
 
 
 class CaseReleteCaseSetSerializer(serializers.ModelSerializer):

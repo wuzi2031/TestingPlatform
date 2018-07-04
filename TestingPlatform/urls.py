@@ -22,7 +22,8 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, CaseViewSet, CaseReleteCaseSetViewSet, \
-    TestTaskViewSet, CaseReleteTestTaskViewSet, CaseReleteCaseSetSortUpdateViewSet, CaseReleteTestTaskSortUpdateViewSet
+    TestTaskViewSet, CaseReleteTestTaskViewSet, CaseReleteCaseSetSortUpdateViewSet, CaseReleteTestTaskSortUpdateViewSet, \
+    CaseScriptViewSet
 from device.views import DeviceViewSet
 
 router = DefaultRouter()
@@ -33,11 +34,12 @@ router.register(r'case', CaseViewSet, base_name='case')
 router.register(r'casereletecaseset', CaseReleteCaseSetViewSet, base_name='casereletecaseset')
 router.register(r'updatecasereletesort', CaseReleteCaseSetSortUpdateViewSet, base_name='updatecasereletesort')
 router.register(r'casereletetesttask', CaseReleteTestTaskViewSet, base_name='casereletetesttask')
+router.register(r'casescript', CaseScriptViewSet, base_name='casescript')
 router.register(r'updatecasereletetesttasksort', CaseReleteTestTaskSortUpdateViewSet,
                 base_name='updatecasereletetesttasksort')
 # 测试任务
 router.register(r'testtask', TestTaskViewSet, base_name='testtask')
-router.register(r'devic', DeviceViewSet, base_name='devic')
+router.register(r'device', DeviceViewSet, base_name='device')
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),

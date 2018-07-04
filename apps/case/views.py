@@ -7,10 +7,10 @@ from rest_framework.response import Response
 
 from utils.mode import modelToJson
 from .filters import ModuleCategoryFilter
-from .models import Product, ModuleCategory, CaseSet, CaseReleteCaseSet, Case, TestTask, CaseReleteTestTask
+from .models import Product, ModuleCategory, CaseSet, CaseReleteCaseSet, Case, TestTask, CaseReleteTestTask, CaseScript
 from .serializers import ProductSerializer, ModuleCategorySerializer, CaseSetSerializer, \
     CaseReleteCaseSetSortUpdateSerializer, CaseReleteCaseSetSerializer, CaseSerializer, TestTaskSerialaer, \
-    CaseReleteTestTaskSerializer, CaseReleteTestTaskSortUpdateSerializer
+    CaseReleteTestTaskSerializer, CaseReleteTestTaskSortUpdateSerializer, CaseScriptSerializer
 
 
 class Pagination(PageNumberPagination):
@@ -204,7 +204,7 @@ class CaseReleteTestTaskViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, 
     pagination_class = Pagination
     filter_backends = (DjangoFilterBackend, OrderingFilter)  # 搜索排序过滤
     filter_fields = ('test_task',)
-    ordering_fields = ('add_time','sort')  # 排序字段
+    ordering_fields = ('add_time', 'sort')  # 排序字段
 
     # permission_classes = (IsAuthenticated,)  # 登录验证
     # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
@@ -260,3 +260,20 @@ class CaseReleteTestTaskSortUpdateViewSet(mixins.CreateModelMixin, viewsets.Gene
     def perform_create(self, serializer):
         list_result = serializer.save()
         return list_result
+
+
+class CaseScriptViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveModelMixin,
+                        mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    """
+    脚本
+    create:
+        创建脚本(注意，关联到同一case的脚本要按执行的先后顺序添加)
+    update:
+        修改脚本
+    destroy:
+        删除脚本
+    retrieve:
+        获取脚本
+    """
+    queryset = CaseScript.objects.all()
+    serializer_class = CaseScriptSerializer

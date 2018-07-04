@@ -132,10 +132,12 @@ class CaseScript(models.Model):
     用例脚本
     """
     case = models.ForeignKey(Case, related_name='case_script', verbose_name='测试用例')
-    name = models.CharField(max_length=50, verbose_name="脚本用例名称")
-    prefix_path = models.CharField(max_length=200, null=True, blank=True, verbose_name='用例前缀路径')
+    name = models.CharField(max_length=50, verbose_name="脚本名称")
+    prefix_path = models.CharField(max_length=200, null=True, blank=True, verbose_name='脚本执行前缀路径')
     script_file = models.FileField(blank=True, null=True, upload_to='case/script', verbose_name="脚本文件")
     upload_file = models.BooleanField(default=False, verbose_name="是否上传文件")
+    execute_env = models.CharField(max_length=200, blank=True, null=True, verbose_name="执行环境",
+                                   help_text="产品型号如:android_mobile,android_pos,computer...")
     desc = models.TextField(null=True, blank=True, verbose_name='描述')
     # is_del = models.BooleanField(default=False, verbose_name='是否已删除')
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")

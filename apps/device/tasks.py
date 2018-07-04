@@ -25,7 +25,8 @@ def device_check():
         source = source
         state = 'online'
         device_type = 'android'
-        Device.objects.create(name=name, code=code, source=source, state=state, device_type=device_type)
+        Device.objects.create(name=name, code=code, env_type=getDeviceType(name), source=source, state=state,
+                              device_type=device_type)
     # 修改上线设备状态
     for online in online_device:
         code = online['code']
@@ -34,3 +35,11 @@ def device_check():
     for offline in offline_device:
         code = offline.code
         Device.objects.filter(code=code, source=source).update(state='offline')
+
+
+def getDeviceType(name):
+    pos_dict = {"DP900", "dp700"}
+    if name in pos_dict:
+        return "android_pos"
+    else:
+        return "android_mobile"
