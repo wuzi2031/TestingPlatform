@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from TestingPlatform.celery import app
-from utils import adb
+from utils.adb import AdbTools
 from .models import Device
 
 import logging
@@ -9,8 +9,8 @@ import logging
 @app.task
 def device_check():
     logging.info("device_check")
-    adbTools = adb.AdbTools()
-    devices_que = adbTools.get_devices();
+    adbTools = AdbTools()
+    devices_que = adbTools.get_devices()
     source = devices_que['host']['ip']
     device_list = Device.objects.filter(source=source)
     device_list_online = devices_que['list']

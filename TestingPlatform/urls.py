@@ -24,6 +24,8 @@ from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, CaseViewSet, CaseReleteCaseSetViewSet, \
     TestTaskViewSet, CaseReleteTestTaskViewSet, CaseReleteCaseSetSortUpdateViewSet, CaseReleteTestTaskSortUpdateViewSet, \
     CaseScriptViewSet
+from uitest.views import TestDataConfigViewSet, DeviceRelateEnvViewSet, EnvConfigViewSet, TaskStartView, \
+    DataBaseConfigViewSet
 from device.views import DeviceViewSet
 
 router = DefaultRouter()
@@ -31,15 +33,20 @@ router.register(r'products', ProductViewSet, base_name='products')
 router.register(r'modules', ModuleCategoryViewSet, base_name='modules')
 router.register(r'casesets', CaseSetViewSet, base_name='casesets')
 router.register(r'case', CaseViewSet, base_name='case')
-router.register(r'casereletecaseset', CaseReleteCaseSetViewSet, base_name='casereletecaseset')
-router.register(r'updatecasereletesort', CaseReleteCaseSetSortUpdateViewSet, base_name='updatecasereletesort')
-router.register(r'casereletetesttask', CaseReleteTestTaskViewSet, base_name='casereletetesttask')
-router.register(r'casescript', CaseScriptViewSet, base_name='casescript')
-router.register(r'updatecasereletetesttasksort', CaseReleteTestTaskSortUpdateViewSet,
-                base_name='updatecasereletetesttasksort')
+router.register(r'case_relete_caseset', CaseReleteCaseSetViewSet, base_name='case_relete_caseset')
+router.register(r'update_case_relete_sort', CaseReleteCaseSetSortUpdateViewSet, base_name='update_case_relete_sort')
+router.register(r'case_relete_test_task', CaseReleteTestTaskViewSet, base_name='case_relete_test_task')
+router.register(r'case_script', CaseScriptViewSet, base_name='case_script')
+router.register(r'update_case_relete_testtask_sort', CaseReleteTestTaskSortUpdateViewSet,
+                base_name='update_case_relete_testtask_sort')
 # 测试任务
-router.register(r'testtask', TestTaskViewSet, base_name='testtask')
+router.register(r'test_task', TestTaskViewSet, base_name='test_task')
 router.register(r'device', DeviceViewSet, base_name='device')
+router.register(r'data_config', TestDataConfigViewSet, base_name='data_config')
+router.register(r'device_config', DeviceRelateEnvViewSet, base_name='device_config')
+router.register(r'task_env', EnvConfigViewSet, base_name='task_env')
+router.register(r'database', DataBaseConfigViewSet, base_name='database')
+
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
@@ -50,4 +57,5 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^login/', obtain_jwt_token),
     url(r'^verify_jwt_token/', verify_jwt_token),
+    url(r'^task_start', TaskStartView.as_view(), name="task_start"),
 ]

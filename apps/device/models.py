@@ -24,6 +24,7 @@ class Device(models.Model):
     )
     name = models.CharField(default="", max_length=30, verbose_name="设备名", help_text="设备名")
     code = models.CharField(default="", max_length=30, verbose_name="设备code", help_text="设备code")
+    version = models.CharField(default="", max_length=30, verbose_name="设备版本", help_text="设备版本")
     env_type = models.CharField(max_length=200, verbose_name="产品型号",
                                 help_text="如:android_mobile,android_pos,computer...")
     desc = models.TextField(default="", verbose_name="产品描述", help_text="描述")

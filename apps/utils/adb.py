@@ -96,7 +96,6 @@ class AdbTools(object):
         :return:
         """
         return self.shell('mkdir %s' % path)
-
     def get_devices(self):
         """
         获取设备列表
