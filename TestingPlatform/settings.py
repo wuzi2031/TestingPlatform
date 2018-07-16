@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'utils',
     'djcelery',
     'uitest',
+    'dataconfig',
 ]
 
 MIDDLEWARE = [

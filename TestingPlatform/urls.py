@@ -24,8 +24,9 @@ from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, CaseViewSet, CaseReleteCaseSetViewSet, \
     TestTaskViewSet, CaseReleteTestTaskViewSet, CaseReleteCaseSetSortUpdateViewSet, CaseReleteTestTaskSortUpdateViewSet, \
     CaseScriptViewSet
-from uitest.views import TestDataConfigViewSet, DeviceRelateEnvViewSet, EnvConfigViewSet, TaskStartView, \
-    DataBaseConfigViewSet
+from uitest.views import DeviceRelateEnvViewSet, EnvConfigViewSet, TaskStartView
+
+from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet
 from device.views import DeviceViewSet
 
 router = DefaultRouter()

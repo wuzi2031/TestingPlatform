@@ -3,9 +3,8 @@ from rest_framework import mixins, viewsets
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from .models import TestDataConfig, DeviceRelateEnv, EnvConfig, DataBaseConfig
-from .serializers import TestDataConfigSerializer, DeviceRelateEnvSerializer, EnvConfigSerializer, \
-    DataBaseConfigSerializer
+from .models import DeviceRelateEnv, EnvConfig
+from .serializers import DeviceRelateEnvSerializer, EnvConfigSerializer
 from case.models import TestTask
 from datetime import datetime
 from message import mq
@@ -16,22 +15,6 @@ from utils.mode import modelToJson
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-
-
-class TestDataConfigViewSet(viewsets.ModelViewSet):
-    """
-    测试数据配置
-    """
-    queryset = TestDataConfig.objects.all()
-    serializer_class = TestDataConfigSerializer
-
-
-class DataBaseConfigViewSet(viewsets.ModelViewSet):
-    """
-    测试数据配置
-    """
-    queryset = DataBaseConfig.objects.all()
-    serializer_class = DataBaseConfigSerializer
 
 
 class DeviceRelateEnvViewSet(viewsets.ModelViewSet):
