@@ -26,7 +26,7 @@ from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, Ca
     CaseScriptViewSet
 from uitest.views import DeviceRelateEnvViewSet, EnvConfigViewSet, TaskStartView
 
-from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet
+from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet, UrlDataConfigViewSet
 from device.views import DeviceViewSet
 
 router = DefaultRouter()
@@ -46,7 +46,8 @@ router.register(r'device', DeviceViewSet, base_name='device')
 router.register(r'data_config', TestDataConfigViewSet, base_name='data_config')
 router.register(r'device_config', DeviceRelateEnvViewSet, base_name='device_config')
 router.register(r'task_env', EnvConfigViewSet, base_name='task_env')
-router.register(r'database', DataBaseConfigViewSet, base_name='database')
+router.register(r'database_config', DataBaseConfigViewSet, base_name='database_config')
+router.register(r'url_config', UrlDataConfigViewSet, base_name='url_config')
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),

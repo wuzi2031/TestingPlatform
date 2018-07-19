@@ -5,7 +5,7 @@ from .mq import send, receive
 # Create your tests here.
 class Mqtest(TestCase):
     def test_mq_send(self):
-        send("test_plat_topic", "task1.android.equpment1", "{name:hi,pass:heihei}")
+        send("test_plat_topic", "task.android.equpment1", "{name:hi,pass:heihei}")
 
     def callback(self, ch, method, properties, body):
         print(" [x] %r:%r" % (method.routing_key, body))
