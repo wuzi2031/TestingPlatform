@@ -1,8 +1,10 @@
-from rest_framework import serializers
 from datetime import datetime
-from .models import EnvConfig, DeviceRelateEnv
-from device.models import Device
+
+from rest_framework import serializers
+
 from dataconfig.serializers import TestDataConfig, TestDataConfigSerializer
+from device.models import Device
+from .models import EnvConfig, DeviceRelateApK
 
 
 class EnvConfigSerializer(serializers.ModelSerializer):
@@ -34,7 +36,7 @@ class EnvConfigSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class DeviceRelateEnvSerializer(serializers.ModelSerializer):
+class DeviceRelateApKSerializer(serializers.ModelSerializer):
     """
     设备数据
     """
@@ -49,12 +51,13 @@ class DeviceRelateEnvSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        instance = DeviceRelateEnv.objects.create(**validated_data)
+        instance = DeviceRelateApK.objects.create(**validated_data)
         device = instance.device
         device.is_used = True
         device.save()
         return instance
 
     class Meta:
-        model = DeviceRelateEnv
+        model = DeviceRelateApK
         fields = "__all__"
+

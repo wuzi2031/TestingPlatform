@@ -1,28 +1,27 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, viewsets
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
-from .models import DeviceRelateEnv, EnvConfig
-from .serializers import DeviceRelateEnvSerializer, EnvConfigSerializer
-from case.models import TestTask
-from datetime import datetime
-from message import mq
-from .mqsetting import EXCHANGE, ROUTER_PER
-from device.models import Device
 import json
-from utils.mode import modelToJson
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from case.models import TestTask
+from message import mq
+from utils.mode import modelToJson
+from .models import EnvConfig, ApKConfig, DeviceRelateApK
+from .mqsetting import EXCHANGE, ROUTER_PER
+from .serializers import DeviceRelateApKSerializer, EnvConfigSerializer
 
 User = get_user_model()
 
 
-class DeviceRelateEnvViewSet(viewsets.ModelViewSet):
+class DeviceRelateApKViewSet(viewsets.ModelViewSet):
     """
     设备选择
     """
-    queryset = DeviceRelateEnv.objects.all()
-    serializer_class = DeviceRelateEnvSerializer
+    queryset = DeviceRelateApK.objects.all()
+    serializer_class = DeviceRelateApKSerializer
 
     def perform_destroy(self, instance):
         device = instance.device
@@ -62,26 +61,40 @@ class TaskStartView(APIView):
                 if (not env_configs):
                     Response("请配置环境数据")
                 env_config = env_configs[0]
-                devices = DeviceRelateEnv.objects.filter(env=env_config)
-                if (not devices):
-                    Response("请选择设备")
-                mq_dict = {}
-                app_path = ""
-                if env_config.app:
-                    app_path = env_config.app.url
-                test_app_path = ""
-                if env_config.test_app:
-                    test_app_path = env_config.test_app.url
-                script_type = env_config.app_script_type
-                mq_dict['script_type'] = script_type
-                mq_dict['app'] = app_path
-                mq_dict['test_app'] = test_app_path
-                mq_dict['devices'] = [modelToJson(device) for device in devices]
-                test_task.task_state = "executing"
-                test_task.execut_start_time = datetime.now()
-                test_task.execut_user = execut_user
-                test_task.save()
-                router = ROUTER_PER
-                mq.send(exchange=EXCHANGE, routing_key=router, body=json.dumps(mq_dict))
+                apkConfigs = ApKConfig.objects.filter(env=env_config)
+
+                for apkConfig in apkConfigs:
+                    app_path = ""
+                    if apkConfig.app:
+                        app_path = apkConfig.app.url
+                    test_app_path = ""
+                    if apkConfig.test_app:
+                        test_app_path = apkConfig.test_app.url
+                    re_devices = DeviceRelateApK.objects.filter(apKConfig=apkConfig)
+                    if (not re_devices):
+                        Response("请选择设备")
+                    for re_device in re_devices:
+                        mq_dict = {}
+                        script_type = env_config.app_script_type
+                        mq_dict['env_config'] = env_config.id
+                        mq_dict['script_type'] = script_type
+                        mq_dict['app'] = app_path
+                        mq_dict['test_app'] = test_app_path
+                        mq_dict['devices'] = [modelToJson(device) for device in devices]
+                        test_task.task_state = "executing"
+                        test_task.execut_start_time = datetime.now()
+                        test_task.execut_user = execut_user
+                        test_task.save()
+                        router = ROUTER_PER
+                        mq.send(exchange=EXCHANGE, routing_key=router, body=json.dumps(mq_dict))
                 return Response("success")
         return Response("fail")
+
+
+class ClientReadyView(APIView):
+    """
+    执行机准备情况通知
+    """
+
+    def post(self, request):
+        return Response("success")

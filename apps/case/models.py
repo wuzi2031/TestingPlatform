@@ -1,6 +1,7 @@
-from django.db import models
-from django.contrib.auth import get_user_model
 from datetime import datetime
+
+from django.contrib.auth import get_user_model
+from django.db import models
 
 User = get_user_model()
 
@@ -10,21 +11,15 @@ class Product(models.Model):
     """
     产品类别
     """
-    PRODUCT_TYPE = (
-        ("mobile", "手机端应用"),
-        ("web", "网页"),
-        ("network", "网络设备"),
-        ("other", "其他")
-    )
+
     name = models.CharField(default="", max_length=30, verbose_name="产品名", help_text="产品名")
     code = models.CharField(default="", max_length=30, verbose_name="产品code", help_text="产品code")
     desc = models.TextField(default="", verbose_name="产品描述", help_text="产品描述")
-    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPE, default="mobile", verbose_name="产品类型")
+    # product_type = models.CharField(max_length=20, choices=PRODUCT_TYPE, default="android_mobile", verbose_name="产品类型")
     # parent_category = models.ForeignKey("self", related_name="sub_product_cat", null=True, blank=True,
     #                                     verbose_name="父类目",
     #                                     help_text="父类目")
     user = models.ForeignKey(User, null=True, blank=True, verbose_name='创建人')
-    package_name = models.CharField(max_length=200, null=True, blank=True, help_text="如:apk包名", verbose_name='包名')
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:
@@ -136,8 +131,8 @@ class CaseScript(models.Model):
     prefix_path = models.CharField(max_length=200, null=True, blank=True, verbose_name='脚本执行前缀路径')
     script_file = models.FileField(blank=True, null=True, upload_to='case/script', verbose_name="脚本文件")
     upload_file = models.BooleanField(default=False, verbose_name="是否上传文件")
-    execute_env = models.CharField(max_length=200, blank=True, null=True, verbose_name="执行环境",
-                                   help_text="产品型号如:android_mobile,android_pos,computer...")
+    # execute_env = models.CharField(max_length=200, blank=True, null=True, verbose_name="执行环境",
+    #                                help_text="产品型号如:android_mobile,android_pos,computer...")
     desc = models.TextField(null=True, blank=True, verbose_name='描述')
     # is_del = models.BooleanField(default=False, verbose_name='是否已删除')
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")

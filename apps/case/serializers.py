@@ -8,12 +8,6 @@ class ProductSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     name = serializers.CharField()
     code = serializers.CharField()
-    product_type = serializers.CharField(help_text="""
-    ("mobile", "手机端应用"),
-        ("web", "网页"),
-        ("network", "网络设备"),
-        ("other", "其他")
-    """)
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
 
     def validate_code(self, code):
@@ -28,7 +22,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ("id", "user", "name", "code", "product_type", "package_name", "desc", "add_time")
+        fields = ("id", "user", "name", "code", "desc", "add_time")
 
 
 class ModuleCategorySerializer(serializers.ModelSerializer):

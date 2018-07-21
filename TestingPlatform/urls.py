@@ -24,7 +24,7 @@ from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, CaseViewSet, CaseReleteCaseSetViewSet, \
     TestTaskViewSet, CaseReleteTestTaskViewSet, CaseReleteCaseSetSortUpdateViewSet, CaseReleteTestTaskSortUpdateViewSet, \
     CaseScriptViewSet
-from uitest.views import DeviceRelateEnvViewSet, EnvConfigViewSet, TaskStartView
+from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView
 
 from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet, UrlDataConfigViewSet
 from device.views import DeviceViewSet
@@ -44,7 +44,7 @@ router.register(r'update_case_relete_testtask_sort', CaseReleteTestTaskSortUpdat
 router.register(r'test_task', TestTaskViewSet, base_name='test_task')
 router.register(r'device', DeviceViewSet, base_name='device')
 router.register(r'data_config', TestDataConfigViewSet, base_name='data_config')
-router.register(r'device_config', DeviceRelateEnvViewSet, base_name='device_config')
+router.register(r'device_config', DeviceRelateApKViewSet, base_name='device_config')
 router.register(r'task_env', EnvConfigViewSet, base_name='task_env')
 router.register(r'database_config', DataBaseConfigViewSet, base_name='database_config')
 router.register(r'url_config', UrlDataConfigViewSet, base_name='url_config')
