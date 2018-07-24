@@ -49,6 +49,7 @@ class ApKConfig(models.Model):
 class DeviceRelateApK(models.Model):
     apKConfig = models.ForeignKey(ApKConfig, related_name="relate_device", verbose_name="apk")
     device = models.ForeignKey(Device, verbose_name="设备")
+    ready = models.BooleanField(default=False, verbose_name="是否就绪")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="创建时间")
 
     class Meta:

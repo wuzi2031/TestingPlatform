@@ -6,10 +6,11 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from case.models import TestTask
+from case.models import TestTask, CaseReleteTestTask
 from message import mq
+from report.models import TaskExecuteInfo
 from utils.mode import modelToJson
-from .models import EnvConfig, ApKConfig, DeviceRelateApK
+from .models import EnvConfig, ApKConfig, DeviceRelateApK, RemoteService
 from .mqsetting import EXCHANGE, ROUTER_PER
 from .serializers import DeviceRelateApKSerializer, EnvConfigSerializer
 
@@ -97,4 +98,41 @@ class ClientReadyView(APIView):
     """
 
     def post(self, request):
+        processed_dict = request.data
+        env_config_id = processed_dict['env_config']
+        servivce_list = processed_dict['servivce_list']
+        env_configs = EnvConfig.objects.filter(id=env_config_id)
+        if (not env_configs):
+            Response("环境数据不存在")
+        env_config = env_configs[0]
+
+        device_codes = list()
+        for service in servivce_list:
+            remoteService = RemoteService()
+            remoteService.type = service['type']
+            remoteService.host = service['host']
+            remoteService.port = service['port']
+            remoteService.device_name = service['device_name']
+            remoteService.device_code = service['device_code']
+            remoteService.env_config = env_config
+            remoteService.save()
+            device_codes.append(service['device_code'])
+        apkConfigs = ApKConfig.objects.filter(env=env_config)
+        ders = DeviceRelateApK.objects.filter(apKConfig__in=apkConfigs)
+        all_ready = True
+        for der in ders:
+            if der.device.code in device_codes:
+                der.ready = True
+                der.save()
+            if not der.ready:
+                all_ready = der.ready
+        if all_ready:
+            # 开始执行第一个用例
+            task = env_config.task
+            caseReleteTestTask = CaseReleteTestTask.objects.filter(test_task=task).order_by('sort').first()
+            case = caseReleteTestTask.case
+            print(case.title)
+            # 记录日志
+            taskExecuteInfo = TaskExecuteInfo()
+
         return Response("success")
