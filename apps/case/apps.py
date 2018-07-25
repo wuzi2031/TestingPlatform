@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class CaseConfig(AppConfig):
     name = 'apps.case'
-    verbose_name = '用例管理'
+    verbose_name = u'用例管理'
