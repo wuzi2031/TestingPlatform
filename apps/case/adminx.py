@@ -3,9 +3,9 @@ from .models import Product, ModuleCategory, Case, CaseScript, CaseSet, CaseRele
 
 
 class ProductAdmin(object):
-    list_display = ["name", "code", "desc", "product_type", "package_name", "add_time", "user"]
+    list_display = ["name", "code", "desc", "add_time", "user"]
     search_fields = ['name', ]
-    list_filter = ["name", "code", "desc", "product_type", "package_name", "add_time", "user"]
+    list_filter = ["name", "code", "desc",  "add_time", "user"]
 
 
 class ModuleCategoryAdmin(object):
@@ -42,9 +42,9 @@ class CaseReleteCaseSetAdmin(object):
 
 
 class CaseScriptAdmin(object):
-    list_display = ["case", "name", "prefix_path", "script_file", "upload_file", "desc", "execute_env"
+    list_display = ["case", "name", "prefix_path", "script_file", "upload_file", "desc"
         , "user", "add_time", "update_time"]
-    list_filter = ["case", "name", "prefix_path", "execute_env", "user"]
+    list_filter = ["case", "name", "prefix_path",  "user"]
     search_fields = ['name', ]
 
 
