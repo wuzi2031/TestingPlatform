@@ -34,6 +34,7 @@ class Device(models.Model):
     state = models.CharField(max_length=20, choices=STATE, default="offline", verbose_name="在线状态")
     source = models.CharField(max_length=20, verbose_name="来源（执行机）")
     is_used = models.BooleanField(default=False, verbose_name="是否被占用")
+    sync_time = models.DateTimeField(default=datetime.now, verbose_name="同步时间")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:

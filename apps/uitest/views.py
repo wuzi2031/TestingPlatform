@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -88,8 +89,8 @@ class TaskStartView(APIView):
                         test_task.save()
                         router = ROUTER_PER
                         mq.send(exchange=EXCHANGE, routing_key=router, body=json.dumps(mq_dict))
-                return Response("success")
-        return Response("fail")
+                return Response(status=status.HTTP_201_CREATED, data={'success'})
+        return Response(status=status.HTTP_201_CREATED, data={'fail'})
 
 
 class ClientReadyView(APIView):
@@ -135,4 +136,4 @@ class ClientReadyView(APIView):
             # 记录日志
             taskExecuteInfo = TaskExecuteInfo()
 
-        return Response("success")
+        return Response(status=status.HTTP_201_CREATED, data={'success'})

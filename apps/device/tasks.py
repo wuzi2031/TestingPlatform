@@ -11,7 +11,7 @@ def device_check():
     logging.info("device_check")
     adbTools = AdbTools()
     devices_que = adbTools.get_devices()
-    source = devices_que['host']['ip']
+    source = devices_que['host']
     device_list = Device.objects.filter(source=source)
     device_list_online = devices_que['list']
     # devices_online_code = [device['code'] for device in devices_online['list']]

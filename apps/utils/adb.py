@@ -12,6 +12,7 @@ import os
 import platform
 import re
 import time
+
 from .common import gethost
 
 
@@ -96,6 +97,7 @@ class AdbTools(object):
         :return:
         """
         return self.shell('mkdir %s' % path)
+
     def get_devices(self):
         """
         获取设备列表
@@ -103,7 +105,7 @@ class AdbTools(object):
         """
         host = gethost()
         devices = {}
-        devices["host"]=host
+        devices["host"] = host
         device_list = list()
         l = self.adb('devices -l').readlines()
         for str in l:

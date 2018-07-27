@@ -14,20 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-# from django.contrib import admin
-import xadmin
-from TestingPlatform.settings import MEDIA_ROOT, STATIC_ROOT
 from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
+
+# from django.contrib import admin
+import xadmin
+from TestingPlatform.settings import MEDIA_ROOT, STATIC_ROOT
 from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, CaseViewSet, CaseReleteCaseSetViewSet, \
     TestTaskViewSet, CaseReleteTestTaskViewSet, CaseReleteCaseSetSortUpdateViewSet, CaseReleteTestTaskSortUpdateViewSet, \
     CaseScriptViewSet
-from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView
-
 from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet, UrlDataConfigViewSet
-from device.views import DeviceViewSet
+from device.views import DeviceViewSet, DeviceSyncView
+from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, base_name='products')
@@ -60,4 +60,5 @@ urlpatterns = [
     url(r'^login/', obtain_jwt_token),
     url(r'^verify_jwt_token/', verify_jwt_token),
     url(r'^task_start', TaskStartView.as_view(), name="task_start"),
+    url(r'^device_sync', DeviceSyncView.as_view(), name="device_sync"),
 ]
