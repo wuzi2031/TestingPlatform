@@ -1,5 +1,7 @@
-from rest_framework import serializers
 from datetime import datetime
+
+from rest_framework import serializers
+
 from .models import TestDataConfig, DataBaseConfig, UrlDataConfig
 
 
@@ -27,10 +29,10 @@ class UrlDataConfigSerializer(serializers.ModelSerializer):
 
 class TestDataConfigSerializer(serializers.ModelSerializer):
     """
-    测试数据配置
+    环境数据配置
     """
-    urls = UrlDataConfigSerializer(many=True, help_text='url数据')
-    data_bases = DataBaseConfigSerializer(many=True, help_text="数据库")
+    urls = UrlDataConfigSerializer(many=True, read_only=True, help_text='url数据')
+    data_bases = DataBaseConfigSerializer(many=True, read_only=True, help_text="数据库")
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
 
     class Meta:

@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -13,9 +14,22 @@ from report.models import TaskExecuteInfo
 from utils.mode import modelToJson
 from .models import EnvConfig, ApKConfig, DeviceRelateApK, RemoteService
 from .mqsetting import EXCHANGE, ROUTER_PER
-from .serializers import DeviceRelateApKSerializer, EnvConfigSerializer
+from .serializers import DeviceRelateApKSerializer, EnvConfigSerializer, ApKConfigSerializer
 
 User = get_user_model()
+
+
+class ApKConfigViewSet(viewsets.ModelViewSet):
+    """
+    apk配置
+    """
+    queryset = ApKConfig.objects.all()
+    serializer_class = ApKConfigSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('env',)
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class DeviceRelateApKViewSet(viewsets.ModelViewSet):

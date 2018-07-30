@@ -9,7 +9,7 @@ User = get_user_model()
 
 class TestDataConfigViewSet(viewsets.ModelViewSet):
     """
-    测试数据配置
+    环境数据配置
     """
     queryset = TestDataConfig.objects.all()
     serializer_class = TestDataConfigSerializer

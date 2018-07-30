@@ -52,8 +52,8 @@ class DeviceSyncView(APIView):
         # devices_online_code = [device['code'] for device in devices_online['list']]
         new_devices = [device for device in device_list_online if device['code'] not in [d.code for d in device_list]]
         online_device = [device for device in device_list_online if device['code'] in [d.code for d in device_list]]
-        offline_device = [device for device in device_list if
-                          device.code not in [d['code'] for d in device_list_online]]
+        # offline_device = [device for device in device_list if
+        #                   device.code not in [d['code'] for d in device_list_online]]
         # 添加新设备
         for new in new_devices:
             name = new['name']
@@ -67,20 +67,22 @@ class DeviceSyncView(APIView):
             code = online['code']
             Device.objects.filter(code=code, source=source).update(state='online', sync_time=datetime.now())
         # 修改离线设备状态
+        #     offline_device = Device.objects.filter(source=source, device_type__contains='android')
+
+        # for offline in offline_device:
+        #     code = offline.code
+        #     offd = Device.objects.filter(code=code, source=source)[0]
+        #     sync_time = offd.sync_time
+        #     if (now - sync_time).seconds > 60:
+        #         offd.state = 'offline'
+        #         offd.save()
         now = datetime.now()
-        for offline in offline_device:
-            code = offline.code
-            offd = Device.objects.filter(code=code, source=source)[0]
-            sync_time = offd.sync_time
+        des = Device.objects.filter(state='online')
+        for de in des:
+            sync_time = de.sync_time
             if (now - sync_time).seconds > 60:
-                offd.state = 'offline'
-                offd.save()
-        pcs = Device.objects.filter(device_type='pc')
-        for pc in pcs:
-            sync_time = pc.sync_time
-            if (now - sync_time).seconds > 60:
-                pc.state = 'offline'
-                pc.save()
+                de.state = 'offline'
+                de.save()
         return Response(status=status.HTTP_201_CREATED, data={'success'})
 
     def getDeviceType(self, name):

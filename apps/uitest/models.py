@@ -17,7 +17,7 @@ class EnvConfig(models.Model):
     task = models.ForeignKey(TestTask, related_name='env', verbose_name='测试任务')
     is_scene_test = models.BooleanField(default=False, verbose_name='是否场景测试')
     app_script_type = models.CharField(max_length=30, choices=TYPE, verbose_name="类型")
-    data_config = models.ForeignKey(TestDataConfig, blank=True, null=True, verbose_name="测试数据配置")
+    data_config = models.ForeignKey(TestDataConfig, blank=True, null=True, verbose_name="环境数据配置")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="创建时间")
 
     class Meta:
@@ -29,7 +29,7 @@ class EnvConfig(models.Model):
 
 
 class ApKConfig(models.Model):
-    name = models.CharField(default="", max_length=30, verbose_name="名称", help_text="名称")
+    name = models.CharField(default="", max_length=300, verbose_name="名称", help_text="名称")
     env = models.ForeignKey(EnvConfig, related_name="relate_apks", verbose_name="环境")
     app = models.FileField(upload_to='app/', verbose_name="被测应用")
     package_name = models.CharField(max_length=200, null=True, blank=True, help_text="apk包名", verbose_name='包名')
@@ -39,7 +39,7 @@ class ApKConfig(models.Model):
     add_time = models.DateTimeField(default=datetime.now, verbose_name="创建时间")
 
     class Meta:
-        verbose_name = "执行环境配置"
+        verbose_name = "APK配置"
         verbose_name_plural = verbose_name
 
     def __str__(self):

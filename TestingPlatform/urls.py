@@ -27,7 +27,7 @@ from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, Ca
     CaseScriptViewSet
 from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet, UrlDataConfigViewSet
 from device.views import DeviceViewSet, DeviceSyncView
-from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView
+from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView, ApKConfigViewSet
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, base_name='products')
@@ -48,6 +48,7 @@ router.register(r'device_config', DeviceRelateApKViewSet, base_name='device_conf
 router.register(r'task_env', EnvConfigViewSet, base_name='task_env')
 router.register(r'database_config', DataBaseConfigViewSet, base_name='database_config')
 router.register(r'url_config', UrlDataConfigViewSet, base_name='url_config')
+router.register(r'apk_config', ApKConfigViewSet, base_name='apk_config')
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
