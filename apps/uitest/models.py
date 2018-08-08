@@ -11,7 +11,7 @@ from device.models import Device
 
 class EnvConfig(models.Model):
     TYPE = (
-        ("appium", "Appimu"),
+        ("python", "python"),
         ("robotium", "robotium")
     )
     task = models.ForeignKey(TestTask, related_name='env', verbose_name='测试任务')
@@ -26,6 +26,21 @@ class EnvConfig(models.Model):
 
     def __str__(self):
         return self.task.name
+
+
+class WebConfig(models.Model):
+    name = models.CharField(default="", max_length=300, verbose_name="名称", help_text="名称")
+    env = models.ForeignKey(EnvConfig, related_name="relate_webs", verbose_name="环境")
+    device = models.ForeignKey(Device, verbose_name="设备")
+    ready = models.BooleanField(default=False, verbose_name="是否就绪")
+    add_time = models.DateTimeField(default=datetime.now, verbose_name="创建时间")
+
+    class Meta:
+        verbose_name = "web配置"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
 
 
 class ApKConfig(models.Model):

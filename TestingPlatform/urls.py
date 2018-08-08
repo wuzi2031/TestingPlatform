@@ -27,7 +27,8 @@ from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, Ca
     CaseScriptViewSet
 from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet, UrlDataConfigViewSet
 from device.views import DeviceViewSet, DeviceSyncView
-from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView, ApKConfigViewSet
+from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView, ApKConfigViewSet, WebConfigViewSet, \
+    ClientReadyView
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, base_name='products')
@@ -49,6 +50,7 @@ router.register(r'task_env', EnvConfigViewSet, base_name='task_env')
 router.register(r'database_config', DataBaseConfigViewSet, base_name='database_config')
 router.register(r'url_config', UrlDataConfigViewSet, base_name='url_config')
 router.register(r'apk_config', ApKConfigViewSet, base_name='apk_config')
+router.register(r'web_config', WebConfigViewSet, base_name='web_config')
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
@@ -60,6 +62,10 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^login/', obtain_jwt_token),
     url(r'^verify_jwt_token/', verify_jwt_token),
+    # 任务开始
     url(r'^task_start', TaskStartView.as_view(), name="task_start"),
+    # 设备状态同步
     url(r'^device_sync', DeviceSyncView.as_view(), name="device_sync"),
+    # 执行机准备结果通知
+    url(r'^client_ready', ClientReadyView.as_view(), name="client_ready"),
 ]

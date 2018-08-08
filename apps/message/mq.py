@@ -1,7 +1,18 @@
 from __future__ import absolute_import
-from TestingPlatform.celery import app
+
+from enum import Enum
+
 import pika
+
 from TestingPlatform import settings
+from TestingPlatform.celery import app
+
+
+class Option(Enum):
+    START = 'start'
+    CASE = 'case'
+    STOP = 'stop'
+    FINISH = 'finish'
 
 
 class Connection:

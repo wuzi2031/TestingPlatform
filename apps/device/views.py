@@ -83,6 +83,12 @@ class DeviceSyncView(APIView):
             if (now - sync_time).seconds > 60:
                 de.state = 'offline'
                 de.save()
+        #删除不存在设备
+        des = Device.objects.filter(state='offline')
+        for de in des:
+            sync_time = de.sync_time
+            if (now - sync_time).seconds > 120:
+                de.delete()
         return Response(status=status.HTTP_201_CREATED, data={'success'})
 
     def getDeviceType(self, name):
