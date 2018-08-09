@@ -34,7 +34,10 @@ class WebConfigSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         instance = WebConfig.objects.create(**validated_data)
-        instance.name = instance.device.name
+        device = instance.device
+        device.is_used = True
+        device.save()
+        instance.name = device.name
         instance.save()
         return instance
 

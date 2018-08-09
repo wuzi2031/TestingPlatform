@@ -224,15 +224,15 @@ BROKER_URL = 'amqp://admin:admin@120.79.16.35:5672//'
 # schedules
 from datetime import timedelta
 
-CELERYBEAT_SCHEDULE = {
-    'add-every-30-seconds': {
-        'task': 'device.tasks.device_check',
-        'schedule': timedelta(seconds=30),  # 每 30 秒执行一次
-        'args': ()  # 任务函数参数
-    },
-    # 'multiply-at-some-time': {
-    #     'task': 'celery_app.task2.multiply',
-    #     'schedule': crontab(hour=9, minute=50),   # 每天早上 9 点 50 分执行一次
-    #     'args': (3, 7)                            # 任务函数参数
-    # }
-}
+# CELERYBEAT_SCHEDULE = {
+#     'add-every-30-seconds': {
+#         'task': 'device.tasks.device_check',
+#         'schedule': timedelta(seconds=30),  # 每 30 秒执行一次
+#         'args': ()  # 任务函数参数
+#     },
+#     # 'multiply-at-some-time': {
+#     #     'task': 'celery_app.task2.multiply',
+#     #     'schedule': crontab(hour=9, minute=50),   # 每天早上 9 点 50 分执行一次
+#     #     'args': (3, 7)                            # 任务函数参数
+#     # }
+# }

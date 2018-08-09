@@ -8,13 +8,13 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from case.models import TestTask, CaseReleteTestTask
+from case.models import TestTask
 from message import mq
-from report.models import TaskExecuteInfo
 from utils.mode import modelToJson
 from .models import EnvConfig, ApKConfig, DeviceRelateApK, RemoteService, WebConfig
 from .mqsetting import EXCHANGE, ROUTER_PER
 from .serializers import DeviceRelateApKSerializer, EnvConfigSerializer, ApKConfigSerializer, WebConfigSerializer
+from .tasks import case_execute
 
 User = get_user_model()
 
@@ -37,6 +37,12 @@ class WebConfigViewSet(viewsets.ModelViewSet):
     serializer_class = WebConfigSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('env',)
+
+    def perform_destroy(self, instance):
+        device = instance.device
+        device.is_used = False
+        device.save()
+        instance.delete()
 
 
 class DeviceRelateApKViewSet(viewsets.ModelViewSet):
@@ -172,12 +178,11 @@ class ClientReadyView(APIView):
             if not der.ready:
                 all_ready = der.ready
         if all_ready:
-            # 开始执行第一个用例
+            # 开始执行
             task = env_config.task
-            caseReleteTestTask = CaseReleteTestTask.objects.filter(test_task=task).order_by('sort').first()
-            case = caseReleteTestTask.case
-            print(case.title)
-            # 记录日志
-            taskExecuteInfo = TaskExecuteInfo()
+            case_execute.delay(task=task.id)
+
+        else:
+            return Response(status=status.HTTP_201_CREATED, data={'fail'})
 
         return Response(status=status.HTTP_201_CREATED, data={'success'})
