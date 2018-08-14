@@ -155,7 +155,8 @@ class TestTask(models.Model):
         ("not_start", "未开始"),
         ("executing", "执行中"),
         ("block", "执行中断"),
-        ("finish", "执行完成")
+        ("finish", "执行完成"),
+        ("stop", "执行停止")
     )
     name = models.CharField(max_length=50, verbose_name="任务名称")
     user = models.ForeignKey(User, null=True, blank=True, verbose_name='创建人')

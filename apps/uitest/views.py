@@ -162,6 +162,7 @@ class ClientReadyView(APIView):
             remoteService.host = service['host']
             remoteService.port = str(service['port'])
             if type == 'appium':
+                remoteService.keyword = service['device_name']
                 remoteService.device_name = service['device_name']
                 remoteService.device_code = service['device_code']
             remoteService.env_config = env_config
@@ -180,7 +181,7 @@ class ClientReadyView(APIView):
         if all_ready:
             # 开始执行
             task = env_config.task
-            case_execute.delay(task=task.id)
+            case_execute.delay(task_id=task.id)
 
         else:
             return Response(status=status.HTTP_201_CREATED, data={'fail'})

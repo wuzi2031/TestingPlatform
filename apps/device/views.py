@@ -60,8 +60,9 @@ class DeviceSyncView(APIView):
             code = new['code']
             source = source
             state = 'online'
+            version = new['version']
             Device.objects.create(name=name, code=code, source=source, state=state,
-                                  device_type=self.getDeviceType(name))
+                                  device_type=self.getDeviceType(name), version=version)
         # 修改上线设备状态
         for online in online_device:
             code = online['code']
@@ -83,7 +84,7 @@ class DeviceSyncView(APIView):
             if (now - sync_time).seconds > 60:
                 de.state = 'offline'
                 de.save()
-        #删除不存在设备
+        # 删除不存在设备
         des = Device.objects.filter(state='offline')
         for de in des:
             sync_time = de.sync_time
