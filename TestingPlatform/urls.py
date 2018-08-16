@@ -28,7 +28,7 @@ from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, Ca
 from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet, UrlDataConfigViewSet
 from device.views import DeviceViewSet, DeviceSyncView
 from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView, ApKConfigViewSet, WebConfigViewSet, \
-    ClientReadyView
+    ClientReadyView, TaskStopView, ClientEnvCleaerView
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, base_name='products')
@@ -68,4 +68,8 @@ urlpatterns = [
     url(r'^device_sync', DeviceSyncView.as_view(), name="device_sync"),
     # 执行机准备结果通知
     url(r'^client_ready', ClientReadyView.as_view(), name="client_ready"),
+    # 停止任务
+    url(r'^task_stop', TaskStopView.as_view(), name="task_stop"),
+    # 执行机环境清理
+    url(r'^client_env_clear', ClientEnvCleaerView.as_view(), name="client_env_clear"),
 ]

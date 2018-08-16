@@ -5,7 +5,6 @@ from enum import Enum
 import pika
 
 from TestingPlatform import settings
-from TestingPlatform.celery import app
 
 
 class Option(Enum):
@@ -47,7 +46,6 @@ def send(exchange, routing_key, body):
         channel.basic_publish(exchange=exchange, routing_key=routing_key, body=body)
 
 
-@app.task
 def receive(exchange, routing_keys, callback):
     """
     接收消息

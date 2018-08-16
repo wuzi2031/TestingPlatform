@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import logging
+import json
 
 from TestingPlatform.celery import app
 from case.models import TestTask, CaseReleteTestTask
@@ -8,8 +9,8 @@ from dataconfig.models import DataBaseConfig, UrlDataConfig
 from report.models import TaskExecuteInfo
 from uitest.models import EnvConfig, RemoteService, ApKConfig, WebConfig, DeviceRelateApK
 from .mqsetting import EXCHANGE, ROUTER_PER
-
-
+from message import mq
+#celery -A TestingPlatform worker -l info
 @app.task
 def case_execute(*args, **kwargs):
     logging.info("case_execute " + str(kwargs['task_id']))
@@ -21,6 +22,7 @@ def case_execute(*args, **kwargs):
         env = EnvConfig.objects.filter(task=task).first()
         run_data = gen_run_data(env)
         caseRelateTestTasks = CaseReleteTestTask.objects.filter(test_task=task).order_by('sort')
+        stop = False
         for caseRelateTestTask in caseRelateTestTasks:
             # 中途手动停止
             task = TestTask.objects.filter(id=task_id).first()
@@ -30,6 +32,7 @@ def case_execute(*args, **kwargs):
                 run_data['option'] = 'stop'
                 router = ROUTER_PER
                 mq.send(exchange=EXCHANGE, routing_key=router + '.stop', body=json.dumps(run_data))
+                stop = True
                 break
             case = caseRelateTestTask.case
             script_path = case.case_script
@@ -37,7 +40,15 @@ def case_execute(*args, **kwargs):
             print(script_path)
             # 记录日志
             taskExecuteInfo = TaskExecuteInfo()
-
+        if not stop:
+            run_data['env_config'] = env.id
+            run_data['script_type'] = 'python'
+            run_data['option'] = 'finish'
+            router = ROUTER_PER
+            mq.send(exchange=EXCHANGE, routing_key=router + '.finish', body=json.dumps(run_data))
+            task.task_state = 'finish'
+            task.save()
+            logging.info("case_execute " + json.dumps(run_data))
 
 def gen_run_data(env):
     run_date = {}
@@ -98,7 +109,7 @@ def gen_run_data(env):
                 ad['host'] = device.source
                 remote_device = RemoteService.objects.filter(env_config=env, host=device.source,
                                                              type='appium', device_code=device.code).first()
-                ad['port'] = device.port
+                ad['port'] = remote_device.port
                 ad['platform_version'] = device.version
                 adk = {}
                 adk[device.name] = ad

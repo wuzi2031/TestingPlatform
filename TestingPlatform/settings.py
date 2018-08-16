@@ -223,7 +223,7 @@ BROKER_URL = 'amqp://admin:admin@120.79.16.35:5672//'
 # CELERY_RESULT_BACKEND = 'amqp://admin:admin@120.79.16.35:5672//'
 # schedules
 from datetime import timedelta
-
+CELERY_IMPORTS = ("uitest.tasks",)
 # CELERYBEAT_SCHEDULE = {
 #     'add-every-30-seconds': {
 #         'task': 'device.tasks.device_check',
