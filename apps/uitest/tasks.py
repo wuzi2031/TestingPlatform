@@ -1,16 +1,20 @@
 from __future__ import absolute_import
 
-import logging
 import json
+import logging
+
+from cmq.tlib.run import run_case
 
 from TestingPlatform.celery import app
 from case.models import TestTask, CaseReleteTestTask
 from dataconfig.models import DataBaseConfig, UrlDataConfig
+from message import mq
 from report.models import TaskExecuteInfo
 from uitest.models import EnvConfig, RemoteService, ApKConfig, WebConfig, DeviceRelateApK
 from .mqsetting import EXCHANGE, ROUTER_PER
-from message import mq
-#celery -A TestingPlatform worker -l info
+
+
+# 工程目录执行celery -A TestingPlatform worker -l info
 @app.task
 def case_execute(*args, **kwargs):
     logging.info("case_execute " + str(kwargs['task_id']))
@@ -38,6 +42,9 @@ def case_execute(*args, **kwargs):
             script_path = case.case_script
             # 执行脚本
             print(script_path)
+            re = run_case(case_dir='cmq.demo', module_name='apiTest', param=data)
+            print(re.failures)
+            print(re.errors)
             # 记录日志
             taskExecuteInfo = TaskExecuteInfo()
         if not stop:
@@ -49,6 +56,7 @@ def case_execute(*args, **kwargs):
             task.task_state = 'finish'
             task.save()
             logging.info("case_execute " + json.dumps(run_data))
+
 
 def gen_run_data(env):
     run_date = {}
