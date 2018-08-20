@@ -12,7 +12,7 @@ from message import mq
 from report.models import TaskExecuteInfo
 from uitest.models import EnvConfig, RemoteService, ApKConfig, WebConfig, DeviceRelateApK
 from .mqsetting import EXCHANGE, ROUTER_PER
-
+from cmq.util import importlib
 
 # 工程目录执行celery -A TestingPlatform worker -l info
 @app.task
@@ -42,9 +42,13 @@ def case_execute(*args, **kwargs):
             script_path = case.case_script
             # 执行脚本
             print(script_path)
-            re = run_case(case_dir='cmq.demo', module_name='apiTest', param=data)
-            print(re.failures)
-            print(re.errors)
+            # if os.getcwd() not in sys.path:
+            #     sys.path.append(os.getcwd())
+            logging.info("case_execute " + json.dumps(run_data))
+            re = run_case(case_dir='cmq.demo', module_name='apiTest', param=json.dumps(run_data))
+            logging.info(re)
+            logging.info(re.failures)
+            logging.info(re.errors)
             # 记录日志
             taskExecuteInfo = TaskExecuteInfo()
         if not stop:
@@ -55,7 +59,7 @@ def case_execute(*args, **kwargs):
             mq.send(exchange=EXCHANGE, routing_key=router + '.finish', body=json.dumps(run_data))
             task.task_state = 'finish'
             task.save()
-            logging.info("case_execute " + json.dumps(run_data))
+
 
 
 def gen_run_data(env):
