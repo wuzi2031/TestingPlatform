@@ -1,7 +1,9 @@
-from rest_framework import serializers
-from .models import Product, ModuleCategory, Case, CaseScript, CaseSet, CaseReleteCaseSet, TestTask, CaseReleteTestTask
 from datetime import datetime
+
 from django.db import transaction
+from rest_framework import serializers
+
+from .models import Product, ModuleCategory, Case, CaseScript, CaseSet, CaseReleteCaseSet, TestTask, CaseReleteTestTask
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -80,6 +82,7 @@ class CaseSetSerializer(serializers.ModelSerializer):
         model = CaseSet
         fields = "__all__"
 
+
 class CaseScriptSerializer(serializers.ModelSerializer):
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -88,6 +91,8 @@ class CaseScriptSerializer(serializers.ModelSerializer):
     class Meta:
         model = CaseScript
         fields = "__all__"
+
+
 class CaseSerializer(serializers.ModelSerializer):
     title = serializers.CharField(help_text="用例标题")
     case_type = serializers.CharField(help_text="""
@@ -111,7 +116,6 @@ class CaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Case
         fields = "__all__"
-
 
 
 class CaseReleteCaseSetSerializer(serializers.ModelSerializer):
@@ -323,7 +327,7 @@ class CaseReleteTestTaskSerializer(serializers.ModelSerializer):
         # 保存用例总数
         total = self.test_task.total_case_num
         if total:
-            self.test_task.total_case_num += self.total_num
+            self.test_task.total_case_num = total + self.total_num
         else:
             self.test_task.total_case_num = self.total_num
         self.test_task.save()

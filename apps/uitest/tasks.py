@@ -2,6 +2,8 @@ from __future__ import absolute_import
 
 import json
 import logging
+import time
+from datetime import datetime
 
 from cmq.tlib.run import run_case
 
@@ -12,7 +14,7 @@ from message import mq
 from report.models import TaskExecuteInfo
 from uitest.models import EnvConfig, RemoteService, ApKConfig, WebConfig, DeviceRelateApK
 from .mqsetting import EXCHANGE, ROUTER_PER
-from cmq.util import importlib
+
 
 # 工程目录执行celery -A TestingPlatform worker -l info
 @app.task
@@ -27,15 +29,12 @@ def case_execute(*args, **kwargs):
         run_data = gen_run_data(env)
         caseRelateTestTasks = CaseReleteTestTask.objects.filter(test_task=task).order_by('sort')
         stop = False
+        task_start_time = datetime.now()
+        re_execut_num = task.re_execut_num
         for caseRelateTestTask in caseRelateTestTasks:
             # 中途手动停止
             task = TestTask.objects.filter(id=task_id).first()
             if task.task_state == 'stop':
-                run_data['env_config'] = env.id
-                run_data['script_type'] = 'python'
-                run_data['option'] = 'stop'
-                router = ROUTER_PER
-                mq.send(exchange=EXCHANGE, routing_key=router + '.stop', body=json.dumps(run_data))
                 stop = True
                 break
             case = caseRelateTestTask.case
@@ -45,21 +44,74 @@ def case_execute(*args, **kwargs):
             # if os.getcwd() not in sys.path:
             #     sys.path.append(os.getcwd())
             logging.info("case_execute " + json.dumps(run_data))
-            re = run_case(case_dir='cmq.demo', module_name='apiTest', param=json.dumps(run_data))
-            logging.info(re)
-            logging.info(re.failures)
-            logging.info(re.errors)
             # 记录日志
             taskExecuteInfo = TaskExecuteInfo()
-        if not stop:
-            run_data['env_config'] = env.id
-            run_data['script_type'] = 'python'
-            run_data['option'] = 'finish'
-            router = ROUTER_PER
-            mq.send(exchange=EXCHANGE, routing_key=router + '.finish', body=json.dumps(run_data))
-            task.task_state = 'finish'
-            task.save()
+            taskExecuteInfo.task = task
+            taskExecuteInfo.case = case
+            taskExecuteInfo.state = 'executing'
+            taskExecuteInfo.save()
+            start_time = time.time()
+            if re_execut_num == None or re_execut_num == 0:
+                re_execut_num = 1
+            while (re_execut_num > 0):
+                re = run_case(case_dir='cmq.demo', module_name='apiTest', param=json.dumps(run_data))
+                failures = re.failures
+                errors = re.errors
+                logging.info(re)
+                logging.info(failures)
+                logging.info(errors)
+                if len(failures) == 0 and len(errors) == 0:
+                    break
+                else:
+                    print('失败重试')
+                re_execut_num = re_execut_num - 1
 
+            if len(failures) > 0:
+                result = 'fail'
+                taskExecuteInfo.failure = failures[0]
+                fail_case_num = task.fail_case_num
+                if fail_case_num == None:
+                    fail_case_num = 0
+                task.fail_case_num = fail_case_num + 1
+            elif len(errors) > 0:
+                result = 'error'
+                taskExecuteInfo.error = errors[0]
+                fail_case_num = task.fail_case_num
+                if fail_case_num == None:
+                    fail_case_num = 0
+                task.fail_case_num = fail_case_num + 1
+            else:
+                result = 'success'
+                success_case_num = task.success_case_num
+                if success_case_num == None:
+                    success_case_num = 0
+                task.success_case_num = success_case_num + 1
+            end_time = time.time()
+            taskExecuteInfo.result = result
+            taskExecuteInfo.exec_time = int((end_time - start_time) * 1000)
+            taskExecuteInfo.state = 'finish'
+            taskExecuteInfo.save()
+            task.save()
+        run_data['env_config'] = env.id
+        run_data['script_type'] = 'python'
+        router = ROUTER_PER
+        if not stop:
+            run_data['option'] = 'finish'
+            task.task_state = 'finish'
+        else:
+            run_data['option'] = 'stop'
+        mq.send(exchange=EXCHANGE, routing_key=router + ".result", body=json.dumps(run_data))
+        task.execut_start_time = task_start_time
+        task.execut_end_time = datetime.now()
+        success_case_num = task.success_case_num
+        if not success_case_num:
+            success_case_num = 0
+        fail_case_num = task.fail_case_num
+        if not fail_case_num:
+            fail_case_num = 0
+        bock_nums = task.total_case_num - success_case_num - fail_case_num
+        task.block_case_num = bock_nums
+        task.save()
 
 
 def gen_run_data(env):
