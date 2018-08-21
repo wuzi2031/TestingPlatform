@@ -2,13 +2,15 @@ from __future__ import absolute_import
 
 import json
 import logging
+import sys
 import time
 from datetime import datetime
 
 from cmq.tlib.run import run_case
 
+from TestingPlatform import settings
 from TestingPlatform.celery import app
-from case.models import TestTask, CaseReleteTestTask
+from case.models import TestTask, CaseReleteTestTask, CaseScript
 from dataconfig.models import DataBaseConfig, UrlDataConfig
 from message import mq
 from report.models import TaskExecuteInfo
@@ -38,60 +40,62 @@ def case_execute(*args, **kwargs):
                 stop = True
                 break
             case = caseRelateTestTask.case
-            script_path = case.case_script
-            # 执行脚本
-            print(script_path)
-            # if os.getcwd() not in sys.path:
-            #     sys.path.append(os.getcwd())
-            logging.info("case_execute " + json.dumps(run_data))
-            # 记录日志
-            taskExecuteInfo = TaskExecuteInfo()
-            taskExecuteInfo.task = task
-            taskExecuteInfo.case = case
-            taskExecuteInfo.state = 'executing'
-            taskExecuteInfo.save()
-            start_time = time.time()
-            if re_execut_num == None or re_execut_num == 0:
-                re_execut_num = 1
-            while (re_execut_num > 0):
-                re = run_case(case_dir='cmq.demo', module_name='apiTest', param=json.dumps(run_data))
-                failures = re.failures
-                errors = re.errors
-                logging.info(re)
-                logging.info(failures)
-                logging.info(errors)
-                if len(failures) == 0 and len(errors) == 0:
-                    break
-                else:
-                    print('失败重试')
-                re_execut_num = re_execut_num - 1
+            case_scripts = CaseScript.objects.filter(case=case)
+            if case_scripts:
+                script_path = case_scripts.first().script_file.path
+                # 执行脚本
+                mc = gen_script_path(script_path)
+                logging.info("case_execute " + json.dumps(run_data))
+                # 记录日志
+                taskExecuteInfo = TaskExecuteInfo()
+                taskExecuteInfo.task = task
+                taskExecuteInfo.case = case
+                taskExecuteInfo.state = 'executing'
+                taskExecuteInfo.save()
+                start_time = time.time()
+                if re_execut_num == None or re_execut_num == 0:
+                    re_execut_num = 1
+                while (re_execut_num > 0):
+                    re = run_case(case_dir=mc[0], module_name=mc[1], param=json.dumps(run_data))
+                    failures = re.failures
+                    errors = re.errors
+                    logging.info(re)
+                    logging.info(failures)
+                    logging.info(errors)
+                    re_execut_num = re_execut_num - 1
+                    if len(failures) == 0 and len(errors) == 0:
+                        break
+                    else:
+                        if re_execut_num > 0:
+                            print('失败重试: ' + case.title)
 
-            if len(failures) > 0:
-                result = 'fail'
-                taskExecuteInfo.failure = failures[0]
-                fail_case_num = task.fail_case_num
-                if fail_case_num == None:
-                    fail_case_num = 0
-                task.fail_case_num = fail_case_num + 1
-            elif len(errors) > 0:
-                result = 'error'
-                taskExecuteInfo.error = errors[0]
-                fail_case_num = task.fail_case_num
-                if fail_case_num == None:
-                    fail_case_num = 0
-                task.fail_case_num = fail_case_num + 1
-            else:
-                result = 'success'
-                success_case_num = task.success_case_num
-                if success_case_num == None:
-                    success_case_num = 0
-                task.success_case_num = success_case_num + 1
-            end_time = time.time()
-            taskExecuteInfo.result = result
-            taskExecuteInfo.exec_time = int((end_time - start_time) * 1000)
-            taskExecuteInfo.state = 'finish'
-            taskExecuteInfo.save()
-            task.save()
+                if len(failures) > 0:
+                    result = 'fail'
+                    taskExecuteInfo.failure = failures[0]
+                    fail_case_num = task.fail_case_num
+                    if fail_case_num == None:
+                        fail_case_num = 0
+                    task.fail_case_num = fail_case_num + 1
+                elif len(errors) > 0:
+                    result = 'error'
+                    taskExecuteInfo.error = errors[0]
+                    fail_case_num = task.fail_case_num
+                    if fail_case_num == None:
+                        fail_case_num = 0
+                    task.fail_case_num = fail_case_num + 1
+                else:
+                    result = 'success'
+                    success_case_num = task.success_case_num
+                    if success_case_num == None:
+                        success_case_num = 0
+                    task.success_case_num = success_case_num + 1
+                end_time = time.time()
+                taskExecuteInfo.result = result
+                taskExecuteInfo.exec_time = int((end_time - start_time) * 1000)
+                taskExecuteInfo.state = 'finish'
+                taskExecuteInfo.save()
+                task.save()
+        # 通知执行机清理环境
         run_data['env_config'] = env.id
         run_data['script_type'] = 'python'
         router = ROUTER_PER
@@ -180,3 +184,11 @@ def gen_run_data(env):
                 ads.append(adk)
         run_date['appium_drivers'] = ads
     return run_date
+
+
+def gen_script_path(path):
+    path = path.replace(settings.BASE_DIR + '/', '')
+    path_arr = path.split('/')
+    class_name = path_arr[-1].replace('.py', '')
+    module_name = path.replace('/' + path_arr[-1], '').replace('/', '.')
+    return module_name, class_name
