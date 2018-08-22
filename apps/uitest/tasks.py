@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 import json
 import logging
-import sys
 import time
 from datetime import datetime
 
@@ -95,7 +94,7 @@ def case_execute(*args, **kwargs):
                 taskExecuteInfo.state = 'finish'
                 taskExecuteInfo.save()
                 task.save()
-        # 通知执行机清理环境
+
         run_data['env_config'] = env.id
         run_data['script_type'] = 'python'
         router = ROUTER_PER
@@ -104,7 +103,11 @@ def case_execute(*args, **kwargs):
             task.task_state = 'finish'
         else:
             run_data['option'] = 'stop'
-        mq.send(exchange=EXCHANGE, routing_key=router + ".result", body=json.dumps(run_data))
+        selenium_drivers = run_data['selenium_drivers']
+        appium_drivers = run_data['appium_drivers']
+        # 通知执行机清理环境
+        if len(selenium_drivers) > 0 or len(appium_drivers) > 0:
+            mq.send(exchange=EXCHANGE, routing_key=router + ".result", body=json.dumps(run_data))
         task.execut_start_time = task_start_time
         task.execut_end_time = datetime.now()
         success_case_num = task.success_case_num
