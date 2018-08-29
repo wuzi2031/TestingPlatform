@@ -20,6 +20,6 @@ drf-extensions
 django-redis
 pycryptodome
 raven
-celery
-django-celery
+celery==3.1.26.post2
+django-celery==3.2.2
 pika

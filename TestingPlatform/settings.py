@@ -27,7 +27,7 @@ SECRET_KEY = 'ed3ji*6k2731llc*&(c$z=y-^ps@8e10n78o#k)1ddsqcp9krd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'users.UserProfile'
 
 # Application definition
@@ -94,10 +94,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "testingplatform",
         'USER': 'root',
-        'PASSWORD': "Wzm@123456",
-        'HOST': "127.0.0.1",
-        # 'PASSWORD': "123456",
-        # 'HOST': "120.79.16.35",
+        # 'PASSWORD': "Wzm@123456",
+        # 'HOST': "127.0.0.1",
+        'PASSWORD': "123456",
+        'HOST': "47.106.145.133",
         'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB;'},
     }
 }
