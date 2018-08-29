@@ -94,10 +94,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "testingplatform",
         'USER': 'root',
-        # 'PASSWORD': "Wzm@123456",
-        # 'HOST': "127.0.0.1",
-        'PASSWORD': "123456",
-        'HOST': "47.106.145.133",
+        'PASSWORD': "Wzm@123456",
+        'HOST': "127.0.0.1",
+        # 'PASSWORD': "123456",
+        # 'HOST': "47.106.145.133",
         'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB;'},
     }
 }
