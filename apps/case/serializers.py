@@ -31,7 +31,7 @@ class ModuleCategorySerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     product = ProductSerializer(read_only=True)
     product_id = serializers.CharField(help_text="产品id", write_only=True)
-    name = serializers.CharField()
+    # name = serializers.CharField()
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
 
     def validate(self, attrs):
