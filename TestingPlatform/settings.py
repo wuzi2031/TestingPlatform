@@ -212,16 +212,13 @@ LOGGING = {
         },
     },
 }
-# Rabbitmq配置
-BROKER_ADDR = "120.79.16.35"
-BROKER_USER = "admin"
-BROKER_PASS = "admin"
-BROKER_PORT = "5672"
+
 # 数据库调度
 # CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 BROKER_URL = 'amqp://admin:admin@120.79.16.35:5672//'
 # CELERY_RESULT_BACKEND = 'amqp://admin:admin@120.79.16.35:5672//'
 # schedules
+CELERYD_FORCE = True
 from datetime import timedelta
 CELERY_IMPORTS = ("uitest.tasks",)
 # CELERYBEAT_SCHEDULE = {

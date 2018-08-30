@@ -4,7 +4,7 @@ from enum import Enum
 
 import pika
 
-from TestingPlatform import settings
+from TestingPlatform import mq_setting
 
 
 class Option(Enum):
@@ -20,9 +20,9 @@ class Connection:
     """
 
     def __init__(self):
-        credentials = pika.PlainCredentials(settings.BROKER_USER, settings.BROKER_PASS)
+        credentials = pika.PlainCredentials(mq_setting.BROKER_USER, mq_setting.BROKER_PASS)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=settings.BROKER_ADDR, port=settings.BROKER_PORT, credentials=credentials))
+            host=mq_setting.BROKER_ADDR, port=mq_setting.BROKER_PORT, credentials=credentials))
 
     def __enter__(self):
         return self.connection
