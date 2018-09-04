@@ -1,9 +1,12 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from utils.mode import modelToJson
 from .filters import ModuleCategoryFilter
@@ -28,7 +31,8 @@ class ProductViewSet(viewsets.ModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
 class ModuleCategoryViewSet(viewsets.ModelViewSet):
     """
@@ -36,8 +40,8 @@ class ModuleCategoryViewSet(viewsets.ModelViewSet):
     """
     queryset = ModuleCategory.objects.all()
     serializer_class = ModuleCategorySerializer
-    # permission_classes = (IsAuthenticated,)  # 登录验证
-    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
     filter_backends = (DjangoFilterBackend, OrderingFilter)  # 排序过滤
     filter_class = ModuleCategoryFilter
     ordering_fields = ('add_time',)  # 排序字段
@@ -59,8 +63,8 @@ class CaseSetViewSet(viewsets.ModelViewSet):
     """
     queryset = CaseSet.objects.all()
     serializer_class = CaseSetSerializer
-    # permission_classes = (IsAuthenticated,)  # 登录验证
-    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
     filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)  # 搜索排序过滤
     filter_fields = ('module',)
     search_fields = ('name',)  # 搜索字段
@@ -100,8 +104,8 @@ class CaseViewSet(viewsets.ModelViewSet):
     queryset = Case.objects.all()
     serializer_class = CaseSerializer
     pagination_class = Pagination
-    # permission_classes = (IsAuthenticated,)  # 登录验证
-    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
     filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)  # 搜索排序过滤
     filter_fields = ('module',)
     search_fields = ('title',)  # 搜索字段
@@ -120,8 +124,9 @@ class CaseReleteCaseSetViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin
     queryset = CaseReleteCaseSet.objects.all()
     serializer_class = CaseReleteCaseSetSerializer
 
-    # permission_classes = (IsAuthenticated,)  # 登录验证
-    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -149,8 +154,9 @@ class CaseReleteCaseSetSortUpdateViewSet(mixins.CreateModelMixin, viewsets.Gener
     queryset = CaseReleteCaseSet.objects.all()
     serializer_class = CaseReleteCaseSetSortUpdateSerializer
 
-    # permission_classes = (IsAuthenticated,)  # 登录验证
-    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -180,8 +186,8 @@ class TestTaskViewSet(viewsets.ModelViewSet):
     serializer_class = TestTaskSerialaer
 
     pagination_class = Pagination
-    # permission_classes = (IsAuthenticated,)  # 登录验证
-    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
     filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)  # 搜索排序过滤
     filter_fields = ('user',)
     search_fields = ('name',)  # 搜索字段
@@ -206,8 +212,8 @@ class CaseReleteTestTaskViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, 
     filter_fields = ('test_task',)
     ordering_fields = ('add_time', 'sort')  # 排序字段
 
-    # permission_classes = (IsAuthenticated,)  # 登录验证
-    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -235,8 +241,9 @@ class CaseReleteTestTaskSortUpdateViewSet(mixins.CreateModelMixin, viewsets.Gene
     queryset = CaseReleteTestTask.objects.all()
     serializer_class = CaseReleteTestTaskSortUpdateSerializer
 
-    # permission_classes = (IsAuthenticated,)  # 登录验证
-    # authentication_classes = (JSONWebTokenAuthentication,)  # jwt验证
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -277,3 +284,5 @@ class CaseScriptViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins
     """
     queryset = CaseScript.objects.all()
     serializer_class = CaseScriptSerializer
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证

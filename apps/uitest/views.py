@@ -5,8 +5,11 @@ from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from case.models import TestTask
 from device.models import Device
@@ -28,6 +31,8 @@ class ApKConfigViewSet(viewsets.ModelViewSet):
     serializer_class = ApKConfigSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('env',)
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
 
 class WebConfigViewSet(viewsets.ModelViewSet):
@@ -38,6 +43,8 @@ class WebConfigViewSet(viewsets.ModelViewSet):
     serializer_class = WebConfigSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('env',)
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
     def perform_destroy(self, instance):
         device = instance.device
@@ -52,6 +59,8 @@ class DeviceRelateApKViewSet(viewsets.ModelViewSet):
     """
     queryset = DeviceRelateApK.objects.all()
     serializer_class = DeviceRelateApKSerializer
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
     def perform_destroy(self, instance):
         device = instance.device
@@ -67,9 +76,14 @@ class EnvConfigViewSet(viewsets.ModelViewSet):
     queryset = EnvConfig.objects.all()
     serializer_class = EnvConfigSerializer
     lookup_field = "task"
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
 
 class TaskStartView(APIView):
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+
     def post(self, request):
         """
         开始执行任务
@@ -139,6 +153,9 @@ class TaskStartView(APIView):
 
 
 class TaskStopView(APIView):
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+
     def post(self, request):
         """
         停止执行任务

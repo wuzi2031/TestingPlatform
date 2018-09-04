@@ -2,8 +2,11 @@ from datetime import datetime
 
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from .models import Device
 from .serializers import DeviceSerializer
@@ -23,6 +26,8 @@ class DeviceViewSet(viewsets.ModelViewSet):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
     # device_check.delay()
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
 
 class DeviceSyncView(APIView):
