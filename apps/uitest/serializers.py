@@ -81,8 +81,8 @@ class EnvConfigSerializer(serializers.ModelSerializer):
     # test_app = serializers.FileField(allow_null=True)
     data_config = TestDataConfigSerializer(read_only=True, help_text="数据配置")
     # devices = serializers.SerializerMethodField(read_only=True, help_text="设备列表")
-    relate_webs = ApKConfigSerializer(many=True, read_only=True, help_text='apk配置')
-    relate_apks = WebConfigSerializer(many=True, read_only=True, help_text='web配置')
+    relate_apks = ApKConfigSerializer(many=True, read_only=True, help_text='apk配置')
+    relate_webs = WebConfigSerializer(many=True, read_only=True, help_text='web配置')
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
 
     # def get_devices(self, obj):
