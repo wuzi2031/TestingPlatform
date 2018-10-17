@@ -16,11 +16,13 @@ class ProductSerializer(serializers.ModelSerializer):
         count = Product.objects.filter(code=code).count()
         if (count > 0):
             raise serializers.ValidationError("产品代码已存在")
+        return code
 
     def validate_name(self, name):
         count = Product.objects.filter(name=name).count()
         if (count > 0):
             raise serializers.ValidationError("产品名称已存在")
+        return name
 
     class Meta:
         model = Product
