@@ -13,15 +13,19 @@ class ProductSerializer(serializers.ModelSerializer):
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
 
     def validate_code(self, code):
-        count = Product.objects.filter(code=code).count()
-        if (count > 0):
-            raise serializers.ValidationError("产品代码已存在")
+        method = self.context['request'].method
+        if (method == 'POST'):
+            count = Product.objects.filter(code=code).count()
+            if (count > 0):
+                raise serializers.ValidationError("产品名称已存在")
         return code
 
     def validate_name(self, name):
-        count = Product.objects.filter(name=name).count()
-        if (count > 0):
-            raise serializers.ValidationError("产品名称已存在")
+        method = self.context['request'].method
+        if (method == 'POST'):
+            count = Product.objects.filter(name=name).count()
+            if (count > 0):
+                raise serializers.ValidationError("产品名称已存在")
         return name
 
     class Meta:
@@ -37,16 +41,18 @@ class ModuleCategorySerializer(serializers.ModelSerializer):
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
 
     def validate(self, attrs):
+        method = self.context['request'].method
         product_id = self.initial_data['product_id']
         code = self.initial_data['code']
         name = self.initial_data['name']
         product = Product.objects.filter(id=product_id)[0]
-        count = ModuleCategory.objects.filter(code=code, product=product).count()
-        if (count > 0):
-            raise serializers.ValidationError("模块代码已存在")
-        count = ModuleCategory.objects.filter(name=name, product=product).count()
-        if (count > 0):
-            raise serializers.ValidationError("模块名称已存在")
+        if (method == 'POST'):
+            count = ModuleCategory.objects.filter(code=code, product=product).count()
+            if (count > 0):
+                raise serializers.ValidationError("模块代码已存在")
+            count = ModuleCategory.objects.filter(name=name, product=product).count()
+            if (count > 0):
+                raise serializers.ValidationError("模块名称已存在")
         attrs['product'] = product
         del attrs['product_id']
         self.fields.pop('product_id')
@@ -68,13 +74,14 @@ class CaseSetSerializer(serializers.ModelSerializer):
         return obj.module.id
 
     def validate(self, attrs):
+        method = self.context['request'].method
         module_id = self.initial_data['module_id']
         name = self.initial_data['name']
         module = ModuleCategory.objects.filter(id=module_id)[0]
-
-        count = CaseSet.objects.filter(name=name, module=module).count()
-        if (count > 0):
-            raise serializers.ValidationError("用例集名称已存在")
+        if (method == 'POST'):
+            count = CaseSet.objects.filter(name=name, module=module).count()
+            if (count > 0):
+                raise serializers.ValidationError("用例集名称已存在")
         attrs['module'] = module
         del attrs['module_id']
         self.fields.pop('module_id')
