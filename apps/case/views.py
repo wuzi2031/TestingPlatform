@@ -34,6 +34,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
+
 class ModuleCategoryViewSet(viewsets.ModelViewSet):
     """
     产品模块
@@ -45,6 +46,48 @@ class ModuleCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, OrderingFilter)  # 排序过滤
     filter_class = ModuleCategoryFilter
     ordering_fields = ('add_time',)  # 排序字段
+
+    def gen_children(self, children):
+        for child in children:
+            id = child.get('id')
+            clist = self.children_dict.get(id)
+            if clist:
+                child['children'] = clist
+                self.gen_children(clist)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        dataes = serializer.data
+        self.children_dict = {}
+        for data in dataes:
+            data_dict = {}
+            data_dict['id'] = data['id']
+            data_dict['parent_category'] = data['parent_category']
+            data_dict['product'] = data['product']['id']
+            data_dict['name'] = data['name']
+            data_dict['code'] = data['code']
+            data_dict['desc'] = data['desc']
+            parent_cat = data_dict.get('parent_category')
+            if not parent_cat:
+                parent_cat = 0
+            key_exist = parent_cat in self.children_dict.keys()
+            if key_exist:
+                list = self.children_dict.get(parent_cat)
+                list.append(data_dict)
+            else:
+                list = []
+                list.append(data_dict)
+                self.children_dict[parent_cat] = list
+        child_list = self.children_dict.get(0)
+        self.gen_children(self.children_dict.get(0))
+        return Response(child_list)
 
 
 class CaseSetViewSet(viewsets.ModelViewSet):
