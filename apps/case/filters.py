@@ -6,7 +6,7 @@ from .models import ModuleCategory
 
 # 自定义的过滤类，需要继承django_filter.rest_framework中的FilterSet类
 class ModuleCategoryFilter(django_filters.rest_framework.FilterSet):
-    module_id = django_filters.NumberFilter(method='category_filter', label='module_id')
+    # module_id = django_filters.NumberFilter(method='category_filter', label='module_id')
     product_id = django_filters.NumberFilter(method='product_filter', label='product_id')
 
     # django_filters.NumberFilter类似，ModelForm中字段类型的控制
@@ -22,4 +22,4 @@ class ModuleCategoryFilter(django_filters.rest_framework.FilterSet):
 
     class Meta:
         model = ModuleCategory
-        fields = ['product_id', 'module_id']
+        fields = ['product_id',]

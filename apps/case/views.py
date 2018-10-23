@@ -43,9 +43,9 @@ class ModuleCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ModuleCategorySerializer
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
-    filter_backends = (DjangoFilterBackend, OrderingFilter)  # 排序过滤
+    filter_backends = (DjangoFilterBackend,)  # 排序过滤
     filter_class = ModuleCategoryFilter
-    ordering_fields = ('add_time',)  # 排序字段
+    # ordering_fields = ('add_time',)  # 排序字段
 
     def gen_children(self, children):
         for child in children:
@@ -86,7 +86,10 @@ class ModuleCategoryViewSet(viewsets.ModelViewSet):
                 list.append(data_dict)
                 self.children_dict[parent_cat] = list
         child_list = self.children_dict.get(0)
-        self.gen_children(self.children_dict.get(0))
+        if child_list:
+            self.gen_children(self.children_dict.get(0))
+        else:
+            child_list = []
         return Response(child_list)
 
 
