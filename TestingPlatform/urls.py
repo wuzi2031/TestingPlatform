@@ -27,7 +27,7 @@ from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, Ca
     CaseScriptViewSet
 from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet, UrlDataConfigViewSet
 from device.views import DeviceViewSet, DeviceSyncView
-from report.views import TaskReportViewSet
+from report.views import TaskReportViewSet,TaskExecuteInfoViewSet
 from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView, ApKConfigViewSet, WebConfigViewSet, \
     ClientReadyView, TaskStopView, ClientEnvCleaerView
 
@@ -53,6 +53,7 @@ router.register(r'url_config', UrlDataConfigViewSet, base_name='url_config')
 router.register(r'apk_config', ApKConfigViewSet, base_name='apk_config')
 router.register(r'web_config', WebConfigViewSet, base_name='web_config')
 router.register(r'report', TaskReportViewSet, base_name='report')
+router.register(r'reportlist', TaskExecuteInfoViewSet, base_name='reportlist')
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),

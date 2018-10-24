@@ -2,12 +2,23 @@ from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from case.models import TestTask
 from case.serializers import TestTaskSerialaer
 from .filters import TaskFilter
+from .models import TaskExecuteInfo
+from .serializers import TaskExecuteInfoSerializer
+
+
+class Pagination(PageNumberPagination):
+    page_size = 12
+    page_size_query_param = 'page_size'
+    page_query_param = "page"
+    max_page_size = 100
 
 
 # Create your views here.
@@ -21,3 +32,23 @@ class TaskReportViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_class = TaskFilter
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+
+
+# Create your views here.
+class TaskExecuteInfoViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    """
+    用例结果
+    list:
+        用例结果列表
+    update:
+        修改用例结果
+    """
+    queryset = TaskExecuteInfo.objects.all()
+    serializer_class = TaskExecuteInfoSerializer
+    pagination_class = Pagination
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+    filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)  # 搜索排序过滤
+    filter_fields = ('task',)
+    search_fields = ('case.title',)  # 搜索字段
+    ordering_fields = ('add_time',)  # 排序字段
