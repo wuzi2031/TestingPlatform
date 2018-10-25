@@ -28,6 +28,7 @@ class TaskReportViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     queryset = TestTask.objects.filter(Q(task_state='block') | Q(task_state='finish') | Q(task_state='stop'))
     serializer_class = TestTaskSerialaer
+    pagination_class = Pagination
     filter_backends = (DjangoFilterBackend,)
     filter_class = TaskFilter
     permission_classes = (IsAuthenticated,)  # 登录验证
