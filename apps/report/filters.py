@@ -16,6 +16,8 @@ class TaskFilter(django_filters.rest_framework.FilterSet):
 
 class ReportCaseListFilter(django_filters.rest_framework.FilterSet):
     task = django_filters.NumberFilter(field_name="task", label='任务')
+    result = django_filters.ChoiceFilter(choices=TaskExecuteInfo.RESULT, label='执行结果')
+    analyse_result = django_filters.ChoiceFilter(choices=TaskExecuteInfo.ANALYSE, label='分析结果')
     case_title = django_filters.CharFilter(method='case_title_filter', label='用例标题')
 
     def case_title_filter(self, queryset, name, value):

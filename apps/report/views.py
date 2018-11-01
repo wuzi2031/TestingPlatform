@@ -37,11 +37,14 @@ class TaskReportViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 # Create your views here.
-class TaskExecuteInfoViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+class TaskExecuteInfoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                             viewsets.GenericViewSet):
     """
     用例结果
     list:
         用例结果列表
+    retrieve:
+        详情
     update:
         修改用例结果
     """
