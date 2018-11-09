@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 from rest_framework import status
@@ -45,6 +46,7 @@ class ModuleCategoryViewSet(viewsets.ModelViewSet):
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
     filter_backends = (DjangoFilterBackend,)  # 排序过滤
     filter_class = ModuleCategoryFilter
+
     # ordering_fields = ('add_time',)  # 排序字段
 
     def gen_children(self, children):
@@ -228,7 +230,7 @@ class TestTaskViewSet(viewsets.ModelViewSet):
     """
     测试任务
     """
-    queryset = TestTask.objects.all()
+    queryset = TestTask.objects.filter(Q(task_state='not_start') | Q(task_state='executing'))
     serializer_class = TestTaskSerialaer
 
     pagination_class = Pagination
