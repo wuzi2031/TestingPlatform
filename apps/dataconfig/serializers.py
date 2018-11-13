@@ -9,7 +9,11 @@ class DataBaseConfigSerializer(serializers.ModelSerializer):
     """
     数据库配置
     """
+    test_data_config_name = serializers.SerializerMethodField()
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
+
+    def get_test_data_config_name(self, obj):
+        return obj.test_data_config.name
 
     class Meta:
         model = DataBaseConfig
@@ -20,7 +24,11 @@ class UrlDataConfigSerializer(serializers.ModelSerializer):
     """
     url配置
     """
+    test_data_config_name = serializers.SerializerMethodField()
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
+
+    def get_test_data_config_name(self, obj):
+        return obj.test_data_config.name
 
     class Meta:
         model = UrlDataConfig
