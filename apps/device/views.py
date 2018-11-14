@@ -1,8 +1,10 @@
 from datetime import datetime
 
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,9 +27,11 @@ class DeviceViewSet(viewsets.ModelViewSet):
     """
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
-    # device_check.delay()
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+    filter_backends = (DjangoFilterBackend, SearchFilter)  # 搜索过滤
+    filter_fields = ('device_type', 'state', 'is_used')
+    search_fields = ('name', 'source')  # 搜索字段
 
 
 class DeviceSyncView(APIView):
