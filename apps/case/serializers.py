@@ -103,6 +103,8 @@ class CaseScriptSerializer(serializers.ModelSerializer):
 
 
 class CaseSerializer(serializers.ModelSerializer):
+    product_name = serializers.SerializerMethodField()
+    module_name = serializers.SerializerMethodField()
     title = serializers.CharField(help_text="用例标题")
     case_type = serializers.CharField(help_text="""
     ("functional", "功能测试"),
@@ -120,6 +122,12 @@ class CaseSerializer(serializers.ModelSerializer):
     update_time = serializers.DateTimeField(default=datetime.now(), read_only=True)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     case_script = CaseScriptSerializer(read_only=True, many=True)
+
+    def get_product_name(self, obj):
+        return obj.product.name
+
+    def get_module_name(self, obj):
+        return obj.module.name
 
     # module
     class Meta:

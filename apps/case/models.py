@@ -83,6 +83,7 @@ class Case(models.Model):
         ("other", "其他")
     )
 
+    product = models.ForeignKey(Product, related_name="case", verbose_name="产品")
     module = models.ForeignKey(ModuleCategory, related_name="case", verbose_name="产品模块")
     title = models.CharField(max_length=30, null=False, blank=False, verbose_name="用例标题")
     user = models.ForeignKey(User, verbose_name='创建人')

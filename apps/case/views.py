@@ -155,7 +155,7 @@ class CaseViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
     filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)  # 搜索排序过滤
-    filter_fields = ('module',)
+    filter_fields = ('module', 'product')
     search_fields = ('title',)  # 搜索字段
     ordering_fields = ('add_time',)  # 排序字段
 
