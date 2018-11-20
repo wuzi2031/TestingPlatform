@@ -1,6 +1,7 @@
 import django_filters
 from django.db.models import Q  # 这个Q可以支持表查询，单下划线获取表字段，双下划线获取关联表，
 
+from .models import Case
 from .models import ModuleCategory
 
 
@@ -22,4 +23,22 @@ class ModuleCategoryFilter(django_filters.rest_framework.FilterSet):
 
     class Meta:
         model = ModuleCategory
-        fields = ['product_id',]
+        fields = ['product_id', ]
+
+
+class CaseListFilter(django_filters.rest_framework.FilterSet):
+    product = django_filters.NumberFilter(field_name="product", label='产品')
+    module = django_filters.NumberFilter(field_name="module", label='模块')
+    case_type = django_filters.ChoiceFilter(choices=Case.CASE_TYPE, label='用例类型')
+    title = django_filters.CharFilter(method='title_filter', label='用例标题')
+    test_type = django_filters.CharFilter(method='test_type_filter', label='测试类型')
+
+    def title_filter(self, queryset, name, value):
+        return queryset.filter(title__contains=value)
+
+    def test_type_filter(self, queryset, name, value):
+        return queryset.filter(test_type__contains=value)
+
+    class Meta:
+        model = Case
+        fields = ['product', 'module', 'case_type']
