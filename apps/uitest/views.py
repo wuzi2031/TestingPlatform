@@ -75,7 +75,8 @@ class EnvConfigViewSet(viewsets.ModelViewSet):
     """
     queryset = EnvConfig.objects.all()
     serializer_class = EnvConfigSerializer
-    lookup_field = "task"
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('task',)
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 
