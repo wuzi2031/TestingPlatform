@@ -46,7 +46,7 @@ class WebConfig(models.Model):
 class ApKConfig(models.Model):
     name = models.CharField(default="", max_length=300, verbose_name="名称", help_text="名称")
     env = models.ForeignKey(EnvConfig, related_name="relate_apks", verbose_name="环境")
-    app = models.FileField(upload_to='app/', verbose_name="被测应用")
+    app = models.FileField(blank=True, null=True, upload_to='app/', verbose_name="被测应用")
     package_name = models.CharField(max_length=200, null=True, blank=True, help_text="apk包名", verbose_name='包名')
     package_start_activity = models.CharField(max_length=200, null=True, blank=True, help_text="apk启动页",
                                               verbose_name='apk启动页')

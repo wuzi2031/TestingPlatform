@@ -23,11 +23,17 @@ class WebConfigSerializer(serializers.ModelSerializer):
         if not devices:
             raise serializers.ValidationError("设备不存在")
         device = devices[0]
+        env_id = self.initial_data['env']
+
+        envs = EnvConfig.objects.filter(id=env_id)
+        if not envs:
+            raise serializers.ValidationError("环境不存在")
+        env = envs[0]
         if not (device.state == "online" or not device.is_used):
             raise serializers.ValidationError("请选择在线的空闲设备")
         if not device.device_type == 'pc':
             raise serializers.ValidationError("请选择PC设备")
-        wbs = WebConfig.objects.filter(device=device)
+        wbs = WebConfig.objects.filter(device=device, env=env)
         if wbs and len(wbs) > 0:
             raise serializers.ValidationError("已添加过该设备")
         return attrs
