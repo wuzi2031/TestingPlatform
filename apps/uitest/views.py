@@ -59,6 +59,8 @@ class DeviceRelateApKViewSet(viewsets.ModelViewSet):
     """
     queryset = DeviceRelateApK.objects.all()
     serializer_class = DeviceRelateApKSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('apKConfig',)
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
 

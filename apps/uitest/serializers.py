@@ -6,7 +6,7 @@ from dataconfig.serializers import TestDataConfig, TestDataConfigSerializer
 from device.models import Device
 from utils.common import getApkInfo
 from .models import EnvConfig, DeviceRelateApK, ApKConfig, WebConfig
-
+from rest_framework.utils import model_meta
 
 class WebConfigSerializer(serializers.ModelSerializer):
     """
@@ -65,6 +65,28 @@ class ApKConfigSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         instance = ApKConfig.objects.create(**validated_data)
+        app_path = instance.app.path
+        info = getApkInfo(app_path)
+        instance.name = info[0]
+        instance.package_name = info[1]
+        instance.package_start_activity = info[2]
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        info = model_meta.get_field_info(instance)
+
+        # Simply set each attribute on the instance, and then save it.
+        # Note that unlike `.create()` we don't need to treat many-to-many
+        # relationships as being a special case. During updates we already
+        # have an instance pk for the relationships to be associated with.
+        for attr, value in validated_data.items():
+            if attr in info.relations and info.relations[attr].to_many:
+                field = getattr(instance, attr)
+                field.set(value)
+            else:
+                setattr(instance, attr, value)
+        instance.save()
         app_path = instance.app.path
         info = getApkInfo(app_path)
         instance.name = info[0]
