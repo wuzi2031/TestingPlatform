@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
@@ -33,6 +34,11 @@ class ApKConfigViewSet(viewsets.ModelViewSet):
     filter_fields = ('env',)
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+
+    def perform_destroy(self, instance):
+        path = instance.app.path
+        instance.delete()
+        os.remove(path)
 
 
 class WebConfigViewSet(viewsets.ModelViewSet):
