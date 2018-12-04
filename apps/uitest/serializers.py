@@ -1,12 +1,13 @@
 from datetime import datetime
 
 from rest_framework import serializers
+from rest_framework.utils import model_meta
 
 from dataconfig.serializers import TestDataConfig, TestDataConfigSerializer
 from device.models import Device
 from utils.common import getApkInfo
 from .models import EnvConfig, DeviceRelateApK, ApKConfig, WebConfig
-from rest_framework.utils import model_meta
+
 
 class WebConfigSerializer(serializers.ModelSerializer):
     """
@@ -135,8 +136,12 @@ class DeviceRelateApKSerializer(serializers.ModelSerializer):
     """
     设备数据
     """
+    device_name = serializers.SerializerMethodField()
     ready = serializers.BooleanField(read_only=True)
     add_time = serializers.DateTimeField(read_only=True, default=datetime.now)
+
+    def get_device_name(self, obj):
+        return obj.device.name
 
     def validate(self, attrs):
         device_id = self.initial_data['device']
@@ -144,9 +149,14 @@ class DeviceRelateApKSerializer(serializers.ModelSerializer):
         if not devices:
             raise serializers.ValidationError("设备不存在")
         device = devices[0]
+        apKConfig_id = self.initial_data['apKConfig']
+        apKConfigs = ApKConfig.objects.filter(id=apKConfig_id)
+        if not apKConfigs:
+            raise serializers.ValidationError("apk配置不存在")
+        apKConfig = apKConfigs[0]
         if not (device.state == "online" or not device.is_used):
             raise serializers.ValidationError("请选择在线的空闲设备")
-        dbs = DeviceRelateApK.objects.filter(device=device)
+        dbs = DeviceRelateApK.objects.filter(device=device, apKConfig=apKConfig)
         if dbs and len(dbs) > 0:
             raise serializers.ValidationError("已添加过该设备")
         return attrs

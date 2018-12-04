@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from utils.mode import modelToJson
-from .filters import ModuleCategoryFilter,CaseListFilter
+from .filters import ModuleCategoryFilter, CaseListFilter, ModuleCaseListFilter
 from .models import Product, ModuleCategory, CaseSet, CaseReleteCaseSet, Case, TestTask, CaseReleteTestTask, CaseScript
 from .serializers import ProductSerializer, ModuleCategorySerializer, CaseSetSerializer, \
     CaseReleteCaseSetSortUpdateSerializer, CaseReleteCaseSetSerializer, CaseSerializer, TestTaskSerialaer, \
@@ -158,6 +158,22 @@ class CaseViewSet(viewsets.ModelViewSet):
     # filter_fields = ('module', 'product', 'case_type')
     # search_fields = ('title', 'test_type')  # 搜索字段
     filter_class = CaseListFilter
+    ordering_fields = ('add_time',)  # 排序字段
+
+
+class ModuleCaseViewSet(viewsets.ModelViewSet):
+    """
+    用例
+    list:
+        用例列表，多module下的用例
+    """
+    queryset = Case.objects.all()
+    serializer_class = CaseSerializer
+    pagination_class = Pagination
+    permission_classes = (IsAuthenticated,)  # 登录验证
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
+    filter_backends = (DjangoFilterBackend,)  # 搜索排序过滤
+    filter_class = ModuleCaseListFilter
     ordering_fields = ('add_time',)  # 排序字段
 
 

@@ -24,10 +24,10 @@ import xadmin
 from TestingPlatform.settings import MEDIA_ROOT, STATIC_ROOT
 from case.views import ProductViewSet, ModuleCategoryViewSet, CaseSetViewSet, CaseViewSet, CaseReleteCaseSetViewSet, \
     TestTaskViewSet, CaseReleteTestTaskViewSet, CaseReleteCaseSetSortUpdateViewSet, CaseReleteTestTaskSortUpdateViewSet, \
-    CaseScriptViewSet
+    CaseScriptViewSet, ModuleCaseViewSet
 from dataconfig.views import TestDataConfigViewSet, DataBaseConfigViewSet, UrlDataConfigViewSet
 from device.views import DeviceViewSet, DeviceSyncView
-from report.views import TaskReportViewSet,TaskExecuteInfoViewSet
+from report.views import TaskReportViewSet, TaskExecuteInfoViewSet
 from uitest.views import DeviceRelateApKViewSet, EnvConfigViewSet, TaskStartView, ApKConfigViewSet, WebConfigViewSet, \
     ClientReadyView, TaskStopView, ClientEnvCleaerView
 
@@ -36,6 +36,7 @@ router.register(r'products', ProductViewSet, base_name='products')
 router.register(r'modules', ModuleCategoryViewSet, base_name='modules')
 router.register(r'casesets', CaseSetViewSet, base_name='casesets')
 router.register(r'case', CaseViewSet, base_name='case')
+router.register(r'module_case', ModuleCaseViewSet, base_name='module_case')
 router.register(r'case_relete_caseset', CaseReleteCaseSetViewSet, base_name='case_relete_caseset')
 router.register(r'update_case_relete_sort', CaseReleteCaseSetSortUpdateViewSet, base_name='update_case_relete_sort')
 router.register(r'case_relete_test_task', CaseReleteTestTaskViewSet, base_name='case_relete_test_task')

@@ -42,3 +42,18 @@ class CaseListFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = Case
         fields = ['product', 'module', 'case_type']
+
+
+class ModuleCaseListFilter(django_filters.rest_framework.FilterSet):
+    module_list = django_filters.Filter(method="module_filter", label='module_list')
+
+    def module_filter(self, queryset, name, value):
+        params = value.split(",")
+        q = Q()
+        for p in params:
+            q.add(Q(**{'module': p}), Q.OR)
+        return queryset.filter(q)
+
+    class Meta:
+        model = Case
+        fields = []
