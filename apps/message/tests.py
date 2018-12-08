@@ -13,7 +13,7 @@ class Mqtest(TestCase):
                     "NAME": "ci非订单库",
                     "USER": "root",
                     "PASSWORD": "root",
-                    "HOST": "ci.rdsmaster.cnhz.shishike.com"
+                    "HOST": "xxx.com"
                 },
                 "local": {
                     "ENGINE": "django.db.backends.mysql",
