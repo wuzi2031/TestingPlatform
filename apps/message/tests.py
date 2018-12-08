@@ -11,15 +11,15 @@ class Mqtest(TestCase):
                 "not_trade": {
                     "ENGINE": "django.db.backends.mysql",
                     "NAME": "ci非订单库",
-                    "USER": "qgd_stf_wt_qa",
-                    "PASSWORD": "PhEG6KP2nHsCnOz9jRfE",
+                    "USER": "root",
+                    "PASSWORD": "root",
                     "HOST": "ci.rdsmaster.cnhz.shishike.com"
                 },
                 "local": {
                     "ENGINE": "django.db.backends.mysql",
                     "NAME": "本地测试数据库",
                     "USER": "root",
-                    "PASSWORD": "Wzm@123456",
+                    "PASSWORD": "13456",
                     "HOST": "127.0.0.1"
                 }
             },
