@@ -97,10 +97,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "testingplatform",
         'USER': 'root',
-        'PASSWORD': "Wzm@123456",
-        'HOST': "127.0.0.1",
-        # 'PASSWORD': "123456",
-        # 'HOST': "47.106.145.133",
+        # 'PASSWORD': "Wzm@123456",
+        # 'HOST': "127.0.0.1",
+        'PASSWORD': "123456",
+        'HOST': "47.106.145.133",
         'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB;'},
     }
 }
@@ -219,7 +219,7 @@ LOGGING = {
 
 # 数据库调度
 # CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-BROKER_URL = 'amqp://admin:admin@120.79.16.35:5672//'
+BROKER_URL = 'amqp://admin:admin@47.106.145.133:5672//'
 # CELERY_RESULT_BACKEND = 'amqp://admin:admin@120.79.16.35:5672//'
 # schedules
 CELERYD_FORCE = True

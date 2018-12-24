@@ -1,5 +1,5 @@
 # Rabbitmq配置
-BROKER_ADDR = "120.79.16.35"
+BROKER_ADDR = "47.106.145.133"
 BROKER_USER = "admin"
 BROKER_PASS = "admin"
 BROKER_PORT = "5672"
