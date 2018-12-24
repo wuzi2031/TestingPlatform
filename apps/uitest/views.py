@@ -156,7 +156,8 @@ class TaskStartView(APIView):
                 # test_task.execut_user = execut_user
                 test_task.save()
                 router = ROUTER_PER
-                mq.send(exchange=EXCHANGE, routing_key=router + '.start', body=json.dumps(mq_dict))
+                if (apkConfigs or web_configs):
+                    mq.send(exchange=EXCHANGE, routing_key=router + '.start', body=json.dumps(mq_dict))
                 return Response(status=status.HTTP_201_CREATED, data=mq_dict)
         return Response(status=status.HTTP_201_CREATED, data={'fail'})
 
