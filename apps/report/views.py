@@ -26,7 +26,8 @@ class TaskReportViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     测试任务结果列表
     """
-    queryset = TestTask.objects.filter(Q(task_state='block') | Q(task_state='finish') | Q(task_state='stop'))
+    queryset = TestTask.objects.filter(Q(task_state='block') | Q(task_state='finish') | Q(task_state='stop')).order_by(
+        "-execut_start_time")
     serializer_class = TestTaskSerialaer
     pagination_class = Pagination
     filter_backends = (DjangoFilterBackend, SearchFilter)

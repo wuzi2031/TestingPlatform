@@ -160,7 +160,7 @@ class TaskStartView(APIView):
                     mq.send(exchange=EXCHANGE, routing_key=router + '.start', body=json.dumps(mq_dict))
                 else:
                     case_execute.delay(task_id=task_id)
-                return Response(status=status.HTTP_201_CREATED, data=mq_dict)
+                return Response(status=status.HTTP_201_CREATED, data={'success'})
         return Response(status=status.HTTP_201_CREATED, data={'fail'})
 
 
@@ -182,12 +182,12 @@ class TaskStopView(APIView):
         if (task_id):
             test_task = TestTask.objects.filter(id=task_id)[0]
             task_state = test_task.task_state
-            if (not task_state == 'executing'):
+            if (task_state == 'executing'):
                 test_task.task_state = 'stop'
                 test_task.save()
-                Response(status=status.HTTP_201_CREATED, data={"success"})
+                return Response(status=status.HTTP_201_CREATED, data={"success"})
             else:
-                Response(status=status.HTTP_201_CREATED, data={"不能进行该操作"})
+                return Response(status=status.HTTP_201_CREATED, data={"不能进行该操作"})
 
 
 class ClientReadyView(APIView):

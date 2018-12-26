@@ -5,8 +5,8 @@ import logging
 import time
 from datetime import datetime
 
-from cmq.tlib.run import run_case
-
+from cmq.util.importlib import dynamic_import_class, get_module_cls, get_module,dynamic_import_module
+from cmq.tlib.run import run_case_by_class
 from TestingPlatform import settings
 from TestingPlatform.celery import app
 from case.models import TestTask, CaseReleteTestTask, CaseScript
@@ -15,7 +15,6 @@ from message import mq
 from report.models import TaskExecuteInfo
 from uitest.models import EnvConfig, RemoteService, ApKConfig, WebConfig, DeviceRelateApK
 from .mqsetting import EXCHANGE, ROUTER_PER
-
 
 # 工程目录执行celery -A TestingPlatform worker -l info
 @app.task
@@ -55,7 +54,13 @@ def case_execute(*args, **kwargs):
                 if re_execut_num == None or re_execut_num == 0:
                     re_execut_num = 1
                 while (re_execut_num > 0):
-                    re = run_case(case_dir=mc[0], module_name=mc[1], param=json.dumps(run_data))
+                    modulep = get_module(case_dir=mc[0], module_name=mc[1])
+                    mod=dynamic_import_module(modulep)
+                    logging.info("modulep: " + modulep)
+                    class_names = get_module_cls(modulep)
+                    class_name = class_names[0]
+                    cls = dynamic_import_class(modulep, class_name)
+                    re = run_case_by_class(cls, param=json.dumps(run_data))
                     failures = re.failures
                     errors = re.errors
                     logging.info(re)
@@ -103,8 +108,8 @@ def case_execute(*args, **kwargs):
             task.task_state = 'finish'
         else:
             run_data['option'] = 'stop'
-        selenium_drivers = run_data['selenium_drivers']
-        appium_drivers = run_data['appium_drivers']
+        selenium_drivers = run_data.get('selenium_drivers',[])
+        appium_drivers = run_data.get('appium_drivers',[])
         # 通知执行机清理环境
         if len(selenium_drivers) > 0 or len(appium_drivers) > 0:
             mq.send(exchange=EXCHANGE, routing_key=router + ".result", body=json.dumps(run_data))

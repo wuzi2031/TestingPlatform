@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, "extra_apps"))
 SECRET_KEY = 'ed3ji*6k2731llc*&(c$z=y-^ps@8e10n78o#k)1ddsqcp9krd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -221,6 +221,10 @@ LOGGING = {
 # CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 BROKER_URL = 'amqp://admin:admin@47.106.145.133:5672//'
 # CELERY_RESULT_BACKEND = 'amqp://admin:admin@120.79.16.35:5672//'
+CELERYD_FORCE_EXECV = True    # 非常重要,有些情况下可以防止死锁
+CELERYD_CONCURRENCY = 20  # 并发worker数
+CELERYD_MAX_TASKS_PER_CHILD = 100# 每个worker最多执行100个任务就会被销毁，可防止内存泄露
+CELERYD_TASK_TIME_LIMIT = 7200    # 单个任务的运行时间不超过此值，否则会被SIGKILL 信号杀死
 # schedules
 CELERYD_FORCE = True
 from datetime import timedelta

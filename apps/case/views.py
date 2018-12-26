@@ -250,7 +250,7 @@ class TestTaskViewSet(viewsets.ModelViewSet):
     queryset = TestTask.objects.filter(Q(task_state='not_start') | Q(task_state='executing'))
     serializer_class = TestTaskSerialaer
 
-    pagination_class = Pagination
+    # pagination_class = Pagination
     permission_classes = (IsAuthenticated,)  # 登录验证
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt验证
     filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)  # 搜索排序过滤
